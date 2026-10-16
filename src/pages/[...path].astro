@@ -1,0 +1,57 @@
+---
+/**
+ * Páginas de servicio armadas por bloques (ver content/servicePages.ts).
+ * Las páginas con archivo propio en src/pages tienen prioridad sobre esta ruta.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import BlockRenderer from '@/components/blocks/BlockRenderer.astro';
+import RelatedServices from '@/components/blocks/RelatedServices.astro';
+import ClosingCta from '@/components/blocks/ClosingCta.astro';
+import { servicePages, type ServicePage } from '@/content/servicePages';
+import { getService, getFamily } from '@/content/services';
+import { service as serviceSchema, faqPage } from '@/lib/schema';
+
+export const getStaticPaths = (() =>
+  servicePages.map((page) => {
+    const svc = getService(page.slug);
+    return { params: { path: svc.path.replace(/^\/|\/$/g, '') }, props: { page } };
+  })) satisfies GetStaticPaths;
+
+interface Props {
+  page: ServicePage;
+}
+const { page } = Astro.props;
+const svc = getService(page.slug);
+const family = getFamily(svc.family);
+const base = Astro.site ?? new URL(Astro.url.origin);
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: family.name, path: family.path },
+  { name: svc.name, path: svc.path },
+];
+
+const faqs = page.blocks.flatMap((b) => (b.type === 'faq' ? b.faqs : []));
+const schema = [
+  serviceSchema(base, { name: svc.name, description: page.metaDescription, path: svc.path }),
+  ...(faqs.length ? [faqPage(faqs)] : []),
+];
+const ctaHref = `/contacto/?tema=${page.hero.cta.topic}`;
+---
+
+<BaseLayout title={page.metaTitle} description={page.metaDescription} crumbs={crumbs} schema={schema} active={svc.family}>
+  <PageHero
+    title={page.hero.title}
+    statement={page.hero.statement}
+    text={page.hero.text}
+    cta={{ label: page.hero.cta.label, href: ctaHref }}
+    crumbs={crumbs}
+    size={page.hero.size}
+    family={svc.family}
+  />
+  <BlockRenderer blocks={page.blocks} prefix={page.slug} />
+  <RelatedServices slugs={page.related} />
+  <ClosingCta title={page.closing.title} text={page.closing.text} cta={{ label: page.hero.cta.label, href: ctaHref }} />
+</BaseLayout>

@@ -1,0 +1,197 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ContactForm from '@/components/blocks/ContactForm.astro';
+import FaqBlock from '@/components/blocks/FaqBlock.astro';
+import { generalFaqs } from '@/content/faqs';
+import { site, whatsappHref } from '@/config/site';
+import { faqPage } from '@/lib/schema';
+
+const base = Astro.site ?? new URL(Astro.url.origin);
+const wa = whatsappHref('Hola, quiero platicar sobre un proyecto.');
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Contacto', path: '/contacto/' },
+];
+const contactPage = {
+  '@type': 'ContactPage',
+  name: `Contacto | ${site.name}`,
+  url: new URL('/contacto/', base).toString(),
+  about: { '@id': new URL('/#organizacion', base).toString() },
+};
+---
+
+<BaseLayout
+  title="Contacto: cuéntanos qué quieres mejorar"
+  description="Escríbenos con un problema, un objetivo o una idea. No necesitas saber qué servicio pedir: IA, publicidad, WhatsApp, contenido, web o automatización."
+  crumbs={crumbs}
+  schema={[contactPage, faqPage(generalFaqs)]}
+>
+  <section class="contact" data-theme="dark" aria-labelledby="titulo-pagina">
+    <div class="wrap grid contact__grid">
+      <div class="contact__intro" data-reveal>
+        <h1 id="titulo-pagina" class="t-head contact__title" data-split data-split-now>Cuéntanos qué quieres mejorar</h1>
+        <p class="contact__lead">
+          Puedes llegar con una idea, un problema o un objetivo. No necesitas saber qué servicio pedir.
+        </p>
+
+        <div class="contact__next">
+          <h2 class="contact__next-title">Qué pasa después</h2>
+          <ol>
+            <li>Leemos lo que nos cuentas.</li>
+            <li>Te escribimos para entender mejor tu caso y lo que ya tienes.</li>
+            <li>Te proponemos por dónde empezar y un alcance claro.</li>
+          </ol>
+        </div>
+
+        {
+          (site.contact.email || wa || site.contact.phone) && (
+            <div class="contact__direct">
+              <h2 class="contact__next-title">Si prefieres escribir directo</h2>
+              <ul>
+                {site.contact.email && (
+                  <li>
+                    <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+                  </li>
+                )}
+                {wa && (
+                  <li>
+                    <a href={wa} rel="noopener">
+                      WhatsApp
+                    </a>
+                  </li>
+                )}
+                {site.contact.phone && (
+                  <li>
+                    <a href={`tel:${site.contact.phone.replace(/\s/g, '')}`}>{site.contact.phone}</a>
+                  </li>
+                )}
+              </ul>
+            </div>
+          )
+        }
+      </div>
+
+      <div class="contact__form" data-reveal="self">
+        <ContactForm variant="full" id="contacto-form" />
+      </div>
+    </div>
+  </section>
+
+  <FaqBlock faqs={generalFaqs} theme="surface" />
+</BaseLayout>
+
+<style>
+  .contact {
+    position: relative;
+    padding-block: calc(var(--header-h) + var(--s-8)) var(--section);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .contact::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(45% 50% at 85% 10%, rgb(124 58 237 / 0.4), transparent 70%),
+      radial-gradient(35% 40% at 0% 90%, rgb(245 196 81 / 0.12), transparent 70%);
+  }
+
+  .contact__grid {
+    row-gap: var(--s-8);
+  }
+
+  .contact__intro {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+  }
+
+  .contact__title {
+    max-width: 11ch;
+    font-size: clamp(2.8rem, 1.4rem + 5vw, 6rem);
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+  }
+
+  .contact__lead {
+    max-width: 30ch;
+    font-size: clamp(1.3rem, 1.05rem + 1vw, 1.8rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    color: #fff;
+  }
+
+  .contact__next-title {
+    margin-bottom: var(--s-4);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .contact__next ol {
+    display: grid;
+    gap: var(--s-3);
+    counter-reset: paso;
+  }
+
+  .contact__next li {
+    position: relative;
+    padding-left: 2.6rem;
+    max-width: 38ch;
+    color: #ded8ee;
+    line-height: 1.5;
+    counter-increment: paso;
+  }
+
+  .contact__next li::before {
+    content: counter(paso);
+    position: absolute;
+    left: 0;
+    top: -0.1em;
+    display: grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--violet), var(--violet-700));
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 800;
+  }
+
+  .contact__direct a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-weight: 700;
+  }
+
+  .contact__form {
+    grid-column: 1 / -1;
+    padding: clamp(1.4rem, 3vw, 2.4rem);
+    border-radius: 32px;
+    background: rgb(20 16 31 / 0.7);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid rgb(255 255 255 / 0.12);
+  }
+
+  @media (min-width: 1024px) {
+    .contact__intro {
+      grid-column: 1 / span 5;
+      position: sticky;
+      top: calc(var(--header-h) + var(--s-6));
+      align-self: start;
+    }
+
+    .contact__form {
+      grid-column: 6 / -1;
+    }
+  }
+</style>

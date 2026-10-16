@@ -1,0 +1,236 @@
+---
+/**
+ * Cierre de página.
+ * - Con formulario (Home, hubs): video del atardecer de fondo y formulario en vidrio.
+ * - Simple (páginas de servicio): campo violeta con titular grande y una acción.
+ */
+import ContactForm from './ContactForm.astro';
+import Arrow from '@/components/ui/Arrow.astro';
+
+interface Props {
+  title: string;
+  text: string;
+  cta?: { label: string; href: string };
+  commitments?: boolean;
+  id?: string;
+}
+
+const { title, text, cta, commitments = true, id = 'cierre' } = Astro.props;
+
+const promises = [
+  'Empezamos por tu objetivo, no por una herramienta.',
+  'Podemos trabajar con lo que ya tienes.',
+  'Si algo no vale la pena automatizar, te lo diremos.',
+  'Medimos lo que sucede después del clic.',
+];
+---
+
+{
+  cta ? (
+    <section class="closing closing--simple section" data-theme="accent" aria-labelledby={id}>
+      <div class="closing__glow" aria-hidden="true" />
+      <div class="wrap closing__simple">
+        <h2 id={id} class="closing__title" data-split>
+          {title}
+        </h2>
+        <div class="closing__bottom">
+          <p class="closing__text">{text}</p>
+          <a class="btn btn--gold" href={cta.href} data-magnetic="0.2">
+            <span>{cta.label}</span>
+            <span class="btn__arrow">
+              <Arrow />
+            </span>
+          </a>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="closing closing--form section" data-theme="dark" aria-labelledby={id}>
+      <div class="closing__media" aria-hidden="true">
+        <video class="closing__video" muted loop playsinline preload="none" poster="/video/atardecer-poster.jpg" data-autoplay>
+          <source src="/video/atardecer-960.mp4" type="video/mp4" media="(max-width: 767px)" />
+          <source src="/video/atardecer-1600.mp4" type="video/mp4" />
+        </video>
+        <div class="closing__shade" />
+      </div>
+      <div class="wrap closing__grid">
+        <div class="closing__intro">
+          <p class="eyebrow">Hablemos</p>
+          <h2 id={id} class="closing__title" data-split>
+            {title}
+          </h2>
+          <p class="closing__text">{text}</p>
+          {commitments && (
+            <ul class="closing__promises">
+              {promises.map((p) => (
+                <li>{p}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <div class="closing__form">
+          <ContactForm id={`${id}-form`} variant="compact" />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .closing {
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .closing__title {
+    font-size: clamp(2.6rem, 1.3rem + 5.2vw, 6.6rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+    max-width: 14ch;
+  }
+
+  .closing__text {
+    max-width: 38ch;
+    font-size: var(--fs-lead);
+    line-height: 1.45;
+    color: var(--c-ink-soft);
+  }
+
+  /* ---------- Con formulario ---------- */
+  .closing--form {
+    padding-block: clamp(6rem, 12vw, 11rem);
+  }
+
+  .closing__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .closing__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .closing__shade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgb(11 9 18 / 0.92) 0%, rgb(11 9 18 / 0.72) 50%, rgb(11 9 18 / 0.55) 100%),
+      linear-gradient(0deg, rgb(11 9 18 / 0.9), transparent 40%);
+  }
+
+  .closing__grid {
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  .closing__intro {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+
+  .closing__promises {
+    display: grid;
+    gap: var(--s-3);
+    margin-top: var(--s-3);
+  }
+
+  .closing__promises li {
+    position: relative;
+    padding-left: 2rem;
+    color: #ded8ee;
+  }
+
+  .closing__promises li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.2em;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    background: rgb(245 196 81 / 0.16);
+  }
+
+  .closing__promises li::after {
+    content: '';
+    position: absolute;
+    left: 0.42rem;
+    top: 0.5em;
+    width: 0.4rem;
+    height: 0.65rem;
+    border-right: 2px solid var(--gold);
+    border-bottom: 2px solid var(--gold);
+    transform: rotate(40deg);
+  }
+
+  .closing__form {
+    padding: clamp(1.4rem, 3vw, 2.4rem);
+    border-radius: 32px;
+    background: rgb(20 16 31 / 0.6);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    backdrop-filter: blur(22px) saturate(150%);
+    border: 1px solid rgb(255 255 255 / 0.12);
+  }
+
+  @media (min-width: 1024px) {
+    .closing__grid {
+      grid-template-columns: 5fr 6fr;
+      align-items: center;
+    }
+  }
+
+  /* ---------- Simple ---------- */
+  .closing__glow {
+    position: absolute;
+    inset: -30%;
+    z-index: -1;
+    background:
+      radial-gradient(35% 45% at 80% 30%, rgb(245 196 81 / 0.28), transparent 70%),
+      radial-gradient(40% 50% at 10% 90%, rgb(196 181 253 / 0.4), transparent 70%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .closing__glow {
+      animation: closing-drift 16s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes closing-drift {
+    to {
+      transform: translate3d(-5%, 4%, 0) rotate(-6deg);
+    }
+  }
+
+  .closing__simple {
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  .closing--simple .closing__title {
+    max-width: 16ch;
+  }
+
+  .closing--simple .closing__text {
+    color: #efe8ff;
+  }
+
+  .closing__bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-6);
+  }
+
+  @media (min-width: 900px) {
+    .closing__bottom {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+  }
+</style>

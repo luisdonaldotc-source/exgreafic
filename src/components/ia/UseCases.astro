@@ -1,0 +1,272 @@
+---
+/**
+ * Casos de uso por área. Pestañas accesibles (flechas, Inicio/Fin).
+ * Sin JS: todas las áreas visibles una debajo de otra.
+ */
+interface Task {
+  task: string;
+  how: string;
+  href?: string;
+}
+interface Area {
+  id: string;
+  name: string;
+  tasks: Task[];
+}
+
+const areas: Area[] = [
+  {
+    id: 'comercial',
+    name: 'Comercial',
+    tasks: [
+      { task: 'Preparar propuestas', how: 'Un flujo que organiza el requerimiento, reutiliza información aprobada y entrega un borrador para revisión.' },
+      { task: 'Investigar una cuenta', how: 'Un resumen de la empresa, su contexto y preguntas útiles antes de la primera reunión.' },
+      { task: 'Preparar reuniones', how: 'Notas previas, pendientes y siguientes pasos a partir de lo que ya se habló.' },
+      { task: 'Dar seguimiento', how: 'Recordatorios y borradores de mensajes con el contexto de cada prospecto.' },
+      { task: 'Priorizar cuentas', how: 'Lectura del historial y de las señales de interés para decidir a quién llamar primero.' },
+    ],
+  },
+  {
+    id: 'marketing',
+    name: 'Marketing',
+    tasks: [
+      { task: 'Investigación', how: 'Audiencias, competidores y preguntas frecuentes de tus clientes, ordenadas en un solo documento.' },
+      { task: 'Contenido', how: 'Borradores con tu tono y tus datos, con revisión humana antes de publicar.' },
+      { task: 'Análisis de campañas', how: 'Lectura de resultados que explica qué cambió y qué conviene probar.' },
+      { task: 'Personalización', how: 'Versiones de un mensaje por industria, etapa o tipo de cliente.' },
+      { task: 'Tareas repetitivas', how: 'Pasos entre herramientas que hoy se hacen copiando y pegando.' },
+    ],
+  },
+  {
+    id: 'atencion',
+    name: 'Atención',
+    tasks: [
+      { task: 'Preguntas frecuentes', how: 'Un asistente que responde con información aprobada y pasa a una persona lo que no sabe.' },
+      { task: 'Clasificar solicitudes', how: 'Cada mensaje llega al área correcta con un resumen de lo que necesita la persona.' },
+      { task: 'Consultar información', how: 'Políticas, precios, inventario o procedimientos a una pregunta de distancia.' },
+      { task: 'WhatsApp', how: 'Respuestas más rápidas en el canal donde tus clientes ya te escriben.', href: '/inteligencia-artificial/whatsapp-con-ia/' },
+    ],
+  },
+  {
+    id: 'operaciones',
+    name: 'Operaciones',
+    tasks: [
+      { task: 'Documentos', how: 'Contratos, reportes o fichas que se generan a partir de datos que ya existen.' },
+      { task: 'Información interna', how: 'Un asistente que encuentra la respuesta en manuales, procedimientos y archivos autorizados.' },
+      { task: 'Procesos', how: 'Pasos manuales que se ordenan y se automatizan cuando hay una regla clara.' },
+      { task: 'Seguimiento de proyectos', how: 'Resúmenes de avance, pendientes y riesgos a partir de las notas del equipo.' },
+    ],
+  },
+];
+---
+
+<section class="cases section" id="por-area" aria-labelledby="casos-titulo" data-theme="dark">
+  <div class="wrap">
+    <div class="cases__head">
+      <h2 id="casos-titulo" class="t-head" data-split>Dónde puede ayudar en tu empresa</h2>
+      <p class="t-lead cases__intro">
+        Ejemplos concretos por área. Si alguno se parece a lo que pasa en tu equipo, ese es un buen punto de partida.
+      </p>
+    </div>
+
+    <div class="cases__body" data-tabs>
+      <div class="cases__tabs" role="tablist" aria-label="Áreas de la empresa" hidden data-tablist>
+        {
+          areas.map((a, i) => (
+            <button
+              class="cases__tab"
+              type="button"
+              role="tab"
+              id={`tab-${a.id}`}
+              aria-controls={`panel-${a.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+            >
+              {a.name}
+            </button>
+          ))
+        }
+      </div>
+
+      {
+        areas.map((a) => (
+          <div class="cases__panel" id={`panel-${a.id}`} role="tabpanel" aria-labelledby={`tab-${a.id}`} data-panel>
+            <h3 class="cases__area">{a.name}</h3>
+            <ul class="cases__list">
+              {a.tasks.map((t) => (
+                <li class="cases__row">
+                  <span class="cases__task">{t.task}</span>
+                  <span class="cases__how">
+                    {t.how}
+                    {t.href && (
+                      <>
+                        {' '}
+                        <a href={t.href}>Ver cómo funciona</a>
+                      </>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import '@/scripts/tabs';
+</script>
+
+<style>
+  .cases__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-7);
+  }
+
+  .cases__intro {
+    max-width: 44ch;
+  }
+
+  @media (min-width: 1024px) {
+    .cases__head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+
+  .cases__tabs {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    padding: 0.35rem;
+    margin-bottom: var(--s-6);
+    border-radius: var(--pill);
+    background: rgb(255 255 255 / 0.06);
+    border: 1px solid rgb(255 255 255 / 0.1);
+  }
+
+  .cases__tab {
+    min-height: 2.9rem;
+    padding: 0 1.4rem;
+    border-radius: var(--pill);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--c-ink-soft);
+    transition:
+      background-color var(--t-mid) var(--ease-out),
+      color var(--t-fast) ease;
+  }
+
+  .cases__tab:hover {
+    color: var(--c-ink);
+  }
+
+  .cases__tab[aria-selected='true'] {
+    background: var(--gold);
+    color: #16111f;
+  }
+
+  .cases__panel + .cases__panel {
+    margin-top: var(--s-8);
+  }
+
+  :global(.is-enhanced) > .cases__panel + .cases__panel {
+    margin-top: 0;
+  }
+
+  :global(.is-enhanced) .cases__area {
+    position: absolute;
+    width: 1px;
+    height: 1px; /* taste-skill-ignore: texto solo para lectores de pantalla */
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .cases__area {
+    margin-bottom: var(--s-4);
+    font-size: var(--fs-lead);
+  }
+
+  .cases__list {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  @media (min-width: 768px) {
+    .cases__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .cases__row {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+    padding: 1.5rem 1.6rem;
+    border-radius: 24px;
+    background: var(--night-2);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    transition:
+      transform var(--t-mid) var(--ease-out),
+      border-color var(--t-mid) ease;
+  }
+
+  .cases__row:hover {
+    transform: translateY(-4px);
+    border-color: rgb(167 139 250 / 0.4);
+  }
+
+  .cases__task {
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .cases__task::before {
+    content: '';
+    display: block;
+    width: 2rem;
+    height: 3px;
+    margin-bottom: var(--s-4);
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--violet-300), var(--gold));
+  }
+
+  .cases__how {
+    color: var(--c-ink-soft);
+    line-height: 1.55;
+  }
+
+  .cases__how a {
+    font-weight: 700;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.is-enhanced) .cases__panel:not([hidden]) .cases__row {
+      animation: case-in 560ms var(--ease-out) both;
+    }
+
+    :global(.is-enhanced) .cases__panel:not([hidden]) .cases__row:nth-child(2) { animation-delay: 60ms; }
+    :global(.is-enhanced) .cases__panel:not([hidden]) .cases__row:nth-child(3) { animation-delay: 120ms; }
+    :global(.is-enhanced) .cases__panel:not([hidden]) .cases__row:nth-child(4) { animation-delay: 180ms; }
+    :global(.is-enhanced) .cases__panel:not([hidden]) .cases__row:nth-child(5) { animation-delay: 240ms; }
+  }
+
+  @keyframes case-in {
+    from {
+      opacity: 0;
+      transform: translateY(16px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

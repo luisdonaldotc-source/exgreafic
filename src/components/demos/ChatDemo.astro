@@ -1,0 +1,222 @@
+---
+/**
+ * Demo ilustrativa de WhatsApp con IA: mensajes con indicador de escritura y,
+ * al final, el paso a una persona. Sin JS, toda la conversación es visible.
+ */
+export interface ChatMsg {
+  from: 'user' | 'bot' | 'handoff';
+  text: string;
+}
+interface Props {
+  business?: string;
+  messages?: ChatMsg[];
+  phone?: boolean;
+  class?: string;
+}
+const {
+  business = 'Clínica dental',
+  messages = [
+    { from: 'user', text: 'Hola, ¿tienen lugar este viernes para una limpieza?' },
+    { from: 'bot', text: 'Hola. Sí, hay espacio a las 17:30. ¿Es tu primera visita?' },
+    { from: 'user', text: 'Sí. ¿Aceptan seguro?' },
+    { from: 'bot', text: 'Te aparto el viernes a las 17:30. Lo del seguro te lo confirma recepción.' },
+    { from: 'handoff', text: 'Conversación pasada a recepción con resumen' },
+  ],
+  phone = false,
+  class: className,
+} = Astro.props;
+---
+
+<div class:list={['cd', phone && 'cd--phone', className]} data-demo="chat" data-ui>
+  <div class="cd__head">
+    <span class="cd__avatar" aria-hidden="true">+</span>
+    <span class="cd__id">
+      <strong>{business}</strong>
+      <small>Asistente · en línea</small>
+    </span>
+    <span class="cd__note">Ejemplo</span>
+  </div>
+  <ol class="cd__list" data-chat-list>
+    {
+      messages.map((m) => (
+        <li class={`cd__msg cd__msg--${m.from}`} data-msg={m.from === 'user' ? 'user' : 'bot'}>
+          {m.text}
+        </li>
+      ))
+    }
+    <li class="cd__typing" data-typing aria-hidden="true"><span></span><span></span><span></span></li>
+  </ol>
+</div>
+
+<script>
+  import '@/scripts/demos';
+</script>
+
+<style>
+  .cd {
+    display: flex;
+    flex-direction: column;
+    border-radius: 22px;
+    overflow: hidden;
+    background: #efeae2;
+    color: #111b21;
+    height: 21rem;
+  }
+
+  .cd--phone {
+    width: min(100%, 22rem);
+    height: 36rem;
+    border-radius: 44px;
+    border: 10px solid #15121d;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.08),
+      0 50px 100px -40px rgb(0 0 0 / 0.7); /* taste-skill-ignore: dispositivo flotante */
+  }
+
+  .cd__head {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.8rem 1rem;
+    background: #075e54;
+    color: #fff;
+  }
+
+  .cd--phone .cd__head {
+    padding-top: 1.4rem;
+  }
+
+  .cd__avatar {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    background: var(--violet);
+    color: var(--gold);
+    font-weight: 900;
+    font-size: 1.2rem;
+  }
+
+  .cd__id {
+    display: grid;
+    line-height: 1.2;
+  }
+
+  .cd__id small {
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+
+  .cd__note {
+    margin-left: auto;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--pill);
+    background: rgb(255 255 255 / 0.15);
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .cd__list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 0.9rem;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .cd__msg {
+    max-width: 82%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    box-shadow: 0 1px 0.5px rgb(11 20 26 / 0.13); /* taste-skill-ignore: burbuja de chat */
+  }
+
+  .cd__msg--user {
+    align-self: flex-start;
+    background: #fff;
+    border-top-left-radius: 2px;
+  }
+
+  .cd__msg--bot {
+    align-self: flex-end;
+    background: #d9fdd3;
+    border-top-right-radius: 2px;
+  }
+
+  .cd__msg--handoff {
+    align-self: center;
+    max-width: 92%;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--pill);
+    background: #fff3c4;
+    color: #5a4300;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  :global(html.js) .cd__msg:not(.is-shown) {
+    display: none;
+  }
+
+  .cd__msg.is-shown {
+    animation: cd-in 420ms var(--ease-spring) both;
+  }
+
+  @keyframes cd-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .cd__typing {
+    display: none;
+    align-self: flex-end;
+    gap: 4px;
+    padding: 0.65rem 0.8rem;
+    border-radius: 10px;
+    background: #d9fdd3;
+  }
+
+  .cd__typing.is-shown {
+    display: inline-flex;
+  }
+
+  .cd__typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #3b6b4d;
+    animation: cd-dot 1s ease-in-out infinite;
+  }
+
+  .cd__typing span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .cd__typing span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes cd-dot {
+    0%,
+    100% {
+      opacity: 0.35;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-3px);
+    }
+  }
+</style>

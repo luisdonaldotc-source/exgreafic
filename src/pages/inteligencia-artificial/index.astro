@@ -1,0 +1,99 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import SplitText from '@/components/blocks/SplitText.astro';
+import UseCases from '@/components/ia/UseCases.astro';
+import FormatRows from '@/components/blocks/FormatRows.astro';
+import ListBlock from '@/components/blocks/ListBlock.astro';
+import FaqBlock from '@/components/blocks/FaqBlock.astro';
+import TwoPaths from '@/components/ia/TwoPaths.astro';
+import { iaFaqs } from '@/content/faqs';
+import { service, faqPage } from '@/lib/schema';
+
+const base = Astro.site ?? new URL(Astro.url.origin);
+const path = '/inteligencia-artificial/';
+const description =
+  'Inteligencia artificial aplicada a tareas reales: asistentes internos, flujos para ventas, marketing, atención y operaciones, capacitación de equipos y WhatsApp con IA.';
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Inteligencia Artificial', path },
+];
+---
+
+<BaseLayout
+  title="Inteligencia artificial aplicada a tu negocio"
+  description={description}
+  crumbs={crumbs}
+  active="ia"
+  schema={[
+    service(base, { name: 'Inteligencia artificial aplicada a negocios', description, path }),
+    faqPage(iaFaqs),
+  ]}
+>
+  <PageHero
+    title="Inteligencia Artificial"
+    statement="La IA sirve cuando mejora una tarea real de tu negocio."
+    text="Te ayudamos a identificar dónde puede ahorrar tiempo, organizar información, atender mejor o crear una nueva capacidad para tu equipo. Después la aterrizamos contigo."
+    cta={{ label: 'Quiero encontrar oportunidades con IA', href: '/contacto/?tema=ia' }}
+    secondary={{ label: 'Ver ejemplos por área', href: '#por-area' }}
+    crumbs={crumbs}
+    family="ia"
+  />
+
+  <SplitText
+    id="caja-negra"
+    title="IA sin cajas negras"
+    emphasis
+    paragraphs={[
+      'La herramienta viene después. Primero definimos qué problema vale la pena resolver.',
+      'Puede ser una capacitación para que tu equipo trabaje mejor, un asistente que consulte información interna, un flujo que prepare propuestas, un sistema que ayude a clasificar solicitudes o una solución nueva alrededor de tu operación.',
+    ]}
+  />
+
+  <UseCases />
+
+  <FormatRows
+    id="tres-maneras"
+    title="Tres maneras de empezar"
+    rows={[
+      {
+        title: 'IA aplicada a tu negocio',
+        text: 'Detectamos un proceso o proyecto y construimos una forma concreta de resolverlo con IA.',
+        list: ['Diagnóstico de oportunidades', 'Diseño del flujo', 'Prototipo o solución', 'Pruebas con casos reales', 'Documentación y adopción'],
+        href: '/inteligencia-artificial/ia-para-tu-negocio/',
+        linkLabel: 'Ver cómo trabajamos un proyecto',
+      },
+      {
+        title: 'Aprende a trabajar mejor con IA',
+        text: 'Capacitación práctica basada en las tareas reales del equipo, no en una lista de “prompts mágicos”.',
+        list: ['Investigación y análisis', 'Creación y revisión de contenidos', 'Organización de proyectos', 'Uso responsable', 'Flujos reutilizables por área'],
+        href: '/inteligencia-artificial/capacitacion/',
+        linkLabel: 'Ver formatos de capacitación',
+      },
+      {
+        title: 'WhatsApp con IA',
+        text: 'Un asistente que entiende preguntas, usa información aprobada y lleva la conversación al siguiente paso.',
+        list: ['Atención', 'Calificación', 'Recomendaciones', 'Reservas o solicitudes', 'Paso a una persona'],
+        href: '/inteligencia-artificial/whatsapp-con-ia/',
+        linkLabel: 'Ver ejemplos de conversación',
+      },
+    ]}
+  />
+
+  <ListBlock
+    id="criterio"
+    title="Nuestro criterio"
+    variant="large"
+    theme="surface"
+    items={[
+      'No automatizamos una tarea solo porque sea posible.',
+      'Definimos qué información puede usar la IA y cuál debe quedar fuera.',
+      'Diseñamos revisión humana donde el riesgo o la decisión lo requieren.',
+      'Probamos con casos reales, no solo con demos perfectas.',
+      'Documentamos cada solución para que no dependa de una sola persona.',
+    ]}
+  />
+
+  <FaqBlock faqs={iaFaqs} />
+  <TwoPaths />
+</BaseLayout>

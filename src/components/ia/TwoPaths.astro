@@ -1,0 +1,117 @@
+---
+/**
+ * Dos caminos: "Quiero aprender" y "Tengo una idea".
+ * Dos campos de color de igual peso; cada uno lleva a su propia acción.
+ */
+import Button from '@/components/ui/Button.astro';
+
+interface Props {
+  title?: string;
+  id?: string;
+}
+const { title = '¿Por dónde quieres empezar?', id = 'dos-caminos' } = Astro.props;
+---
+
+<section class="paths" aria-labelledby={id}>
+  <h2 id={id} class="visually-hidden">{title}</h2>
+  <div class="paths__grid">
+    <div class="path" data-theme="surface" data-reveal>
+      <h3 class="path__title">Quiero aprender</h3>
+      <p class="path__kicker">Para personas, equipos y empresas.</p>
+      <p class="path__text">
+        Capacitación práctica con las tareas de tu equipo: cuándo usar IA, cómo darle contexto, cómo revisar lo
+        que entrega y cómo convertirlo en un flujo que se repite.
+      </p>
+      <Button href="/contacto/?tema=capacitacion">Diseñar una capacitación</Button>
+    </div>
+    <div class="path" data-theme="inverse" data-reveal>
+      <h3 class="path__title">Tengo una idea</h3>
+      <p class="path__kicker">Para quien ya tiene algo en mente.</p>
+      <p class="path__text">
+        Acompañamiento para convertirla en un proyecto que funcione: definición, prototipo, pruebas con casos reales y adopción
+        dentro del equipo.
+      </p>
+      <Button href="/contacto/?tema=idea" variant="light">Revisar mi idea</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .paths {
+    padding: var(--s-4);
+    background: var(--night);
+  }
+
+  .paths__grid {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  @media (min-width: 900px) {
+    .paths__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .path {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: var(--s-5);
+    padding: clamp(2rem, 5vw, 4.5rem);
+    min-height: min(78svh, 680px);
+    border-radius: 36px;
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .path:hover {
+    transform: translateY(-6px);
+  }
+
+  .path[data-theme='surface'] {
+    --c-ink: #fff;
+    --c-ink-soft: #ebe4fe;
+    --c-accent: var(--gold);
+    --c-on-accent: #16111f;
+    background:
+      radial-gradient(60% 50% at 100% 0%, rgb(245 196 81 / 0.3), transparent 70%),
+      linear-gradient(150deg, var(--violet), var(--violet-700));
+    color: #fff;
+  }
+
+  .path[data-theme='inverse'] {
+    --c-ink: #16111f;
+    --c-ink-soft: #4a3a10;
+    --c-accent: #16111f;
+    --c-on-accent: #fff;
+    background:
+      radial-gradient(60% 50% at 100% 0%, rgb(255 255 255 / 0.45), transparent 70%),
+      linear-gradient(150deg, var(--gold), #e5a524);
+    color: #16111f;
+  }
+
+  .path__kicker {
+    margin-top: calc(var(--s-2) * -1);
+    font-weight: 700;
+    opacity: 0.85;
+  }
+
+  .path__title {
+    font-size: clamp(3rem, 1.6rem + 5.5vw, 7rem);
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    line-height: 0.92;
+    max-width: 9ch;
+  }
+
+  .path__text {
+    max-width: 36ch;
+    font-size: var(--fs-lead);
+    line-height: 1.45;
+    margin-bottom: var(--s-4);
+  }
+</style>

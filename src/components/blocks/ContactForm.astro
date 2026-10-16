@@ -1,0 +1,443 @@
+---
+/**
+ * Formulario para iniciar una conversación.
+ * - compact: nombre, correo, WhatsApp, tema (lista desplegable) y mensaje.
+ * - full: agrega empresa y muestra los temas como opciones visibles.
+ * El tema se puede preseleccionar con ?tema=<valor> (ver content/problems.ts).
+ * Envío: POST a PUBLIC_FORM_ENDPOINT (FormData). Sin endpoint, el formulario lo indica.
+ */
+import { site, whatsappHref } from '@/config/site';
+import { topics } from '@/content/problems';
+
+interface Props {
+  variant?: 'compact' | 'full';
+  id?: string;
+  submitLabel?: string;
+}
+const { variant = 'compact', id = 'formulario', submitLabel = 'Hablemos de tu proyecto' } = Astro.props;
+const endpoint = site.formEndpoint;
+const fallbackEmail = site.contact.email;
+const fallbackWa = whatsappHref('Hola, quiero platicar sobre un proyecto.');
+---
+
+<form
+  class:list={['form', `form--${variant}`]}
+  id={id}
+  action={endpoint || undefined}
+  method="post"
+  novalidate
+  data-contact-form
+  data-endpoint={endpoint}
+  data-email={fallbackEmail}
+  data-wa={fallbackWa}
+>
+  <div class="form__fields">
+    <div class="field">
+      <label for={`${id}-nombre`}>Nombre</label>
+      <input id={`${id}-nombre`} name="nombre" type="text" autocomplete="name" required data-error="Escribe tu nombre." />
+      <p class="field__error" id={`${id}-nombre-error`} aria-live="polite"></p>
+    </div>
+
+    {
+      variant === 'full' && (
+        <div class="field">
+          <label for={`${id}-empresa`}>
+            Empresa <span class="field__optional">(opcional)</span>
+          </label>
+          <input id={`${id}-empresa`} name="empresa" type="text" autocomplete="organization" />
+        </div>
+      )
+    }
+
+    <div class="field">
+      <label for={`${id}-correo`}>Correo</label>
+      <input
+        id={`${id}-correo`}
+        name="correo"
+        type="email"
+        autocomplete="email"
+        inputmode="email"
+        pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+        required
+        data-error="Escribe tu correo."
+        data-error-format="Revisa el correo, por ejemplo: nombre@empresa.com"
+      />
+      <p class="field__error" id={`${id}-correo-error`} aria-live="polite"></p>
+    </div>
+
+    <div class="field">
+      <label for={`${id}-telefono`}>
+        WhatsApp o teléfono <span class="field__optional">(opcional)</span>
+      </label>
+      <input id={`${id}-telefono`} name="telefono" type="tel" autocomplete="tel" inputmode="tel" />
+    </div>
+
+    {
+      variant === 'compact' ? (
+        <div class="field field--wide">
+          <label for={`${id}-tema`}>¿Qué quieres mejorar?</label>
+          <div class="field__select">
+            <select id={`${id}-tema`} name="tema" required data-error="Elige la opción que más se parezca a lo que buscas.">
+              <option value="">Elige una opción</option>
+              {topics.map((t) => (
+                <option value={t.value}>{t.label}</option>
+              ))}
+            </select>
+          </div>
+          <p class="field__error" id={`${id}-tema-error`} aria-live="polite" />
+        </div>
+      ) : (
+        <fieldset class="field field--wide choices" data-error="Elige la opción que más se parezca a lo que buscas.">
+          <legend>¿Qué quieres mejorar?</legend>
+          <div class="choices__grid">
+            {topics.map((t, i) => (
+              <label class="choice">
+                <input type="radio" name="tema" value={t.value} required={i === 0} />
+                <span class="choice__box" aria-hidden="true" />
+                <span class="choice__label">{t.label}</span>
+              </label>
+            ))}
+          </div>
+          <p class="field__error" id={`${id}-tema-error`} aria-live="polite" />
+        </fieldset>
+      )
+    }
+
+    <div class="field field--wide">
+      <label for={`${id}-mensaje`}>
+        Cuéntanos brevemente qué tienes en mente <span class="field__optional">(opcional)</span>
+      </label>
+      <textarea id={`${id}-mensaje`} name="mensaje" rows={variant === 'full' ? 5 : 3}></textarea>
+    </div>
+
+    <div class="form__trap" aria-hidden="true">
+      <label for={`${id}-web`}>No llenar este campo</label>
+      <input id={`${id}-web`} name="sitio_web" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+    <input type="hidden" name="origen" value={Astro.url.pathname} />
+  </div>
+
+  <div class="form__submit">
+    <button type="submit" class="btn form__button">
+      <span data-label>{submitLabel}</span>
+      <span class="btn__arrow" aria-hidden="true">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square"><path d="M2 8h11.2M8.6 3.4 13.2 8l-4.6 4.6"></path></svg>
+      </span>
+    </button>
+    <p class="form__privacy">
+      Usamos tus datos solo para responderte. <a href="/aviso-de-privacidad/">Aviso de privacidad</a>.
+    </p>
+  </div>
+
+  <p class="form__status" role="status" aria-live="polite" data-status></p>
+</form>
+
+<div class="form-done" hidden data-form-done tabindex="-1">
+  <p class="form-done__title">Gracias. Recibimos tu mensaje.</p>
+  <p class="form-done__text">
+    Vamos a leer lo que nos cuentas y te escribiremos para entender mejor tu caso. Si quieres agregar algo, puedes
+    responder al correo que te llegue.
+  </p>
+</div>
+
+<script>
+  import '@/scripts/contact-form';
+</script>
+
+<style>
+  .form {
+    --field-bg: #ffffff;
+    --field-border: var(--c-line);
+    --field-text: var(--c-ink);
+    --field-soft: var(--c-ink-soft);
+    --field-error: var(--c-error);
+  }
+
+  :global([data-theme='dark']) .form,
+  :global([data-theme='inverse']) .form,
+  :global([data-theme='accent']) .form {
+    --field-bg: rgb(255 255 255 / 0.06);
+    --field-border: rgb(255 255 255 / 0.14);
+    --field-text: #f4f1fb;
+    --field-soft: #b4adc9;
+    --field-error: var(--c-error-on-inverse);
+  }
+
+  .form__fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-4) var(--s-4);
+  }
+
+  @media (min-width: 640px) {
+    .form__fields {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field--wide {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .field label,
+  .field legend {
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .field legend {
+    padding: 0;
+    margin-bottom: var(--s-2);
+  }
+
+  .field__optional {
+    font-weight: 500;
+    color: var(--field-soft);
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    min-height: var(--control-h);
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--field-border);
+    border-radius: 14px;
+    background: var(--field-bg);
+    color: var(--field-text);
+    font-size: 1rem;
+    line-height: 1.4;
+    transition:
+      border-color var(--t-fast) ease,
+      box-shadow var(--t-fast) ease,
+      background-color var(--t-fast) ease;
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 6.5rem;
+  }
+
+  .field input:hover,
+  .field select:hover,
+  .field textarea:hover {
+    border-color: color-mix(in srgb, var(--field-text) 35%, transparent);
+  }
+
+  .field input:focus-visible,
+  .field select:focus-visible,
+  .field textarea:focus-visible {
+    outline: none;
+    border-color: var(--c-accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--c-accent) 25%, transparent);
+  }
+
+  .field [aria-invalid='true'] {
+    border-color: var(--field-error);
+  }
+
+  .field__select {
+    position: relative;
+  }
+
+  .field__select select {
+    appearance: none;
+    padding-right: 2.75rem;
+    cursor: pointer;
+  }
+
+  .field__select::after {
+    content: '';
+    position: absolute;
+    right: 1.1rem;
+    top: 50%;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+
+  .field__select select option {
+    color: #120f1c;
+    background: #fff;
+  }
+
+  .field__error {
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--field-error);
+  }
+
+  .field__error:empty {
+    display: none;
+  }
+
+  /* ---------- Opciones (variante completa) ---------- */
+  .choices__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .choices__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .choice {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-height: 3.1rem;
+    padding: 0.55rem 1rem;
+    border-radius: 14px;
+    background: var(--field-bg);
+    border: 1px solid var(--field-border);
+    cursor: pointer;
+    font-weight: 500 !important;
+    font-size: 0.98rem !important;
+    transition:
+      border-color var(--t-fast) ease,
+      background-color var(--t-fast) ease,
+      transform var(--t-fast) var(--ease-out);
+  }
+
+  .choice:hover {
+    border-color: var(--c-accent);
+  }
+
+  .choice:active {
+    transform: scale(0.98);
+  }
+
+  .choice input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .choice__box {
+    position: relative;
+    flex: none;
+    width: 1.15rem;
+    height: 1.15rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    opacity: 0.6;
+  }
+
+  .choice__box::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--c-accent);
+    transform: scale(0);
+    transition: transform var(--t-fast) var(--ease-spring);
+  }
+
+  .choice input:checked ~ .choice__box {
+    border-color: var(--c-accent);
+    opacity: 1;
+  }
+
+  .choice input:checked ~ .choice__box::after {
+    transform: scale(1);
+  }
+
+  .choice:has(input:checked) {
+    border-color: var(--c-accent);
+    background: color-mix(in srgb, var(--c-accent) 10%, var(--field-bg));
+  }
+
+  .choice:has(input:focus-visible) {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--c-accent) 25%, transparent);
+  }
+
+  /* ---------- Envío ---------- */
+  .form__submit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-4) var(--s-5);
+    margin-top: var(--s-6);
+  }
+
+  .form__button[aria-busy='true'] {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .form__privacy {
+    font-size: var(--fs-small);
+    color: var(--field-soft);
+    max-width: 36ch;
+  }
+
+  .form__privacy a {
+    color: inherit;
+  }
+
+  .form__status {
+    margin-top: var(--s-4);
+    font-weight: 600;
+  }
+
+  .form__status:empty {
+    display: none;
+  }
+
+  .form__status[data-tone='error'] {
+    color: var(--field-error);
+  }
+
+  .form__trap {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px; /* taste-skill-ignore: campo trampa oculto */
+    overflow: hidden;
+  }
+
+  .form-done {
+    padding: var(--s-6) 0;
+  }
+
+  .form-done:focus {
+    outline: none;
+  }
+
+  .form-done__title {
+    font-size: var(--fs-head);
+    font-weight: 700;
+    letter-spacing: var(--tr-head);
+    line-height: var(--lh-head);
+  }
+
+  .form-done__text {
+    margin-top: var(--s-5);
+    max-width: 40ch;
+    font-size: var(--fs-lead);
+    line-height: var(--lh-lead);
+    color: var(--c-ink-soft);
+  }
+</style>

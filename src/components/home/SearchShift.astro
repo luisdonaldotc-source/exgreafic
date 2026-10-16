@@ -1,0 +1,196 @@
+---
+/**
+ * La forma de buscar ya cambió: tres cifras con contador y fuente visible,
+ * y una frase que se ilumina palabra por palabra al hacer scroll.
+ */
+import Arrow from '@/components/ui/Arrow.astro';
+import Cite from '@/components/ui/Cite.astro';
+import SourceList from '@/components/ui/SourceList.astro';
+---
+
+<section class="shift section" data-theme="accent" aria-labelledby="buscar-titulo">
+  <div class="shift__bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="shift__head">
+      <p class="eyebrow shift__eyebrow">La forma de buscar ya cambió</p>
+      <h2 id="buscar-titulo" class="t-head shift__title" data-split>
+        Tus clientes ya no solo buscan en Google. También preguntan a la IA.
+      </h2>
+    </div>
+
+    <dl class="stats" data-reveal>
+      <div class="stat">
+        <dt class="stat__fig">
+          <span data-count="1.2" data-decimals="1">1.2</span><span class="stat__unit">mil millones</span>
+        </dt>
+        <dd>personas usan ChatGPT cada semana, de acuerdo con OpenAI.<Cite n={1} scope="buscar" /></dd>
+      </div>
+      <div class="stat">
+        <dt class="stat__fig">
+          <span data-count="117.4" data-decimals="1" data-prefix="+" data-suffix="%">+117.4%</span>
+        </dt>
+        <dd>
+          crecieron en un año las visitas que llegan a sitios web desde plataformas de IA (Similarweb, 2026).<Cite
+            n={3}
+            scope="buscar"
+          />
+        </dd>
+      </div>
+      <div class="stat">
+        <dt class="stat__fig">México</dt>
+        <dd>ya tiene acceso de autoservicio a Ads Manager, la plataforma para anunciarse en ChatGPT.<Cite n={2} scope="buscar" /></dd>
+      </div>
+    </dl>
+
+    <div class="shift__foot">
+      <p class="shift__statement" data-scrub>
+        Eso no significa abandonar Google, las redes o el SEO. Significa preparar a tu negocio para ser encontrado en más
+        momentos de decisión.
+      </p>
+      <div class="shift__actions">
+        <a class="btn btn--gold" href="/publicidad/chatgpt-ads/" data-magnetic="0.2">
+          <span>Conocer ChatGPT Ads</span>
+          <span class="btn__arrow"><Arrow /></span>
+        </a>
+        <div class="shift__sources">
+          <SourceList ids={['openaiAds', 'openaiAvailability', 'similarweb']} scope="buscar" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .shift {
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .shift__bg {
+    position: absolute;
+    inset: -20%;
+    z-index: -1;
+    background:
+      radial-gradient(40% 50% at 15% 20%, rgb(196 181 253 / 0.45), transparent 70%),
+      radial-gradient(35% 45% at 90% 80%, rgb(245 196 81 / 0.25), transparent 70%),
+      var(--violet);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .shift__bg {
+      animation: shift-drift 18s ease-in-out infinite alternate;
+    }
+  }
+
+  @keyframes shift-drift {
+    to {
+      transform: translate3d(4%, -3%, 0) rotate(4deg);
+    }
+  }
+
+  .shift__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-8);
+  }
+
+  .shift__eyebrow {
+    color: #f1ebff;
+  }
+
+  .shift__title {
+    max-width: 18ch;
+  }
+
+  .stats {
+    display: grid;
+    gap: var(--gap);
+  }
+
+  @media (min-width: 900px) {
+    .stats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .stat {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+    padding: clamp(1.4rem, 2.4vw, 2.2rem);
+    border-radius: 28px;
+    background: rgb(255 255 255 / 0.1);
+    border: 1px solid rgb(255 255 255 / 0.2);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    transition:
+      transform var(--t-mid) var(--ease-out),
+      background-color var(--t-mid) ease;
+  }
+
+  .stat:hover {
+    transform: translateY(-6px);
+    background: rgb(255 255 255 / 0.16);
+  }
+
+  .stat__fig {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.25em;
+    font-size: clamp(3rem, 2rem + 3.6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: -0.055em;
+    line-height: 0.95;
+    color: #fff;
+    font-variant-numeric: lining-nums proportional-nums;
+  }
+
+  .stat__unit {
+    font-size: 0.32em;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  .stat dd {
+    max-width: 32ch;
+    color: #fff;
+    line-height: 1.5;
+  }
+
+  .shift__foot {
+    display: grid;
+    gap: var(--s-7);
+    margin-top: var(--s-9);
+  }
+
+  .shift__statement {
+    max-width: 28ch;
+    font-size: clamp(1.7rem, 1.1rem + 2.4vw, 3.4rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    color: #fff;
+  }
+
+  .shift__actions {
+    display: grid;
+    gap: var(--s-6);
+    align-content: end;
+  }
+
+  .shift__sources :global(.sources) {
+    color: #ebe4fe;
+  }
+
+  .shift__sources :global(a) {
+    color: inherit;
+  }
+
+  @media (min-width: 1024px) {
+    .shift__foot {
+      grid-template-columns: 1.5fr 1fr;
+      align-items: end;
+    }
+  }
+</style>

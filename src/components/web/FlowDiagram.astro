@@ -1,0 +1,247 @@
+---
+/**
+ * Cómo se conectan las piezas después del clic. Cada paso enlaza al servicio que lo resuelve.
+ */
+import { getService } from '@/content/services';
+
+const steps = [
+  { name: 'Anuncio o búsqueda', text: 'Alguien te encuentra.', services: ['google-ads', 'seo-y-visibilidad-en-ia'] },
+  { name: 'Página', text: 'Entiende qué haces y qué hacer después.', services: ['sitios-web-y-landing-pages'] },
+  { name: 'Formulario o WhatsApp', text: 'Pide información sin fricción.', services: ['desarrollos-a-medida', 'whatsapp-con-ia'] },
+  { name: 'CRM', text: 'El contacto queda registrado con su origen.', services: ['automatizacion-y-crm'] },
+  { name: 'Seguimiento', text: 'Recibe lo que necesita, en el momento correcto.', services: ['email-y-seguimiento-de-prospectos', 'newsletters'] },
+  { name: 'Medición', text: 'Sabes qué generó la oportunidad.', services: ['analitica-y-medicion'] },
+];
+---
+
+<section class="flow section" data-theme="dark" aria-labelledby="flujo-titulo">
+  <div class="wrap">
+    <div class="flow__head">
+      <h2 id="flujo-titulo" class="t-head" data-split>Así se conectan las piezas</h2>
+      <p class="t-lead flow__intro">
+        Cada paso puede funcionar por separado, pero el resultado aparece cuando nadie tiene que mover la información a
+        mano entre uno y otro.
+      </p>
+    </div>
+
+    <ol class="flow__list" data-reveal>
+      {
+        steps.map((s) => (
+          <li class="flow__step">
+            <span class="flow__line" aria-hidden="true" />
+            <span class="flow__name">{s.name}</span>
+            <span class="flow__text">{s.text}</span>
+            <span class="flow__links">
+              {s.services.map((slug) => {
+                const svc = getService(slug);
+                return <a href={svc.path}>{svc.name}</a>;
+              })}
+            </span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .flow__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-8);
+  }
+
+  .flow__intro {
+    max-width: 44ch;
+  }
+
+  @media (min-width: 1024px) {
+    .flow__head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+
+  .flow__list {
+    position: relative;
+    display: grid;
+    gap: 0;
+  }
+
+  .flow__step {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+    padding: 0 0 var(--s-7) 3.2rem;
+  }
+
+  /* Línea vertical con paquete de datos que viaja (móvil). */
+  .flow__line {
+    position: absolute;
+    left: 0.85rem;
+    top: 0.4rem;
+    bottom: -0.4rem;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--violet), rgb(167 139 250 / 0.25));
+    overflow: visible;
+  }
+
+  .flow__step:last-child .flow__line {
+    bottom: auto;
+    height: 1.4rem;
+  }
+
+  .flow__line::before {
+    content: '';
+    position: absolute;
+    left: -0.6rem;
+    top: -0.2rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: var(--night);
+    border: 3px solid var(--violet-300);
+    box-shadow: 0 0 0 6px rgb(124 58 237 / 0.18);
+  }
+
+  .flow__step:last-child .flow__line::before {
+    background: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 6px rgb(245 196 81 / 0.2);
+  }
+
+  .flow__line::after {
+    content: '';
+    position: absolute;
+    left: -0.2rem;
+    top: 1.6rem;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 14px var(--gold); /* taste-skill-ignore: paquete de datos */
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .flow__step:not(:last-child) .flow__line::after {
+      animation: flow-down 2.4s var(--ease-in-out) infinite;
+      animation-delay: calc(var(--i, 0) * 0.4s);
+    }
+  }
+
+  @keyframes flow-down {
+    0% {
+      transform: translateY(0);
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(5rem);
+      opacity: 0;
+    }
+  }
+
+  .flow__name {
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .flow__text {
+    color: var(--c-ink-soft);
+    max-width: 30ch;
+    line-height: 1.45;
+  }
+
+  .flow__links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: var(--s-1);
+  }
+
+  .flow__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .flow__links a:hover {
+    text-decoration: underline;
+  }
+
+  /* Escritorio: línea horizontal con paquetes que viajan. */
+  @media (min-width: 1100px) {
+    .flow__list {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      column-gap: var(--gap);
+    }
+
+    .flow__step {
+      padding: 3.4rem 0 0;
+    }
+
+    .flow__line {
+      left: 0;
+      right: calc(var(--gap) * -1);
+      top: 0.6rem;
+      bottom: auto;
+      width: auto;
+      height: 3px;
+      background: linear-gradient(90deg, var(--violet), rgb(167 139 250 / 0.3));
+    }
+
+    .flow__step:last-child .flow__line {
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--violet), var(--gold));
+    }
+
+    .flow__line::before {
+      left: 0;
+      top: -0.6rem;
+    }
+
+    .flow__line::after {
+      left: 1.6rem;
+      top: -0.12rem;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .flow__step:not(:last-child) .flow__line::after {
+        animation-name: flow-right;
+      }
+    }
+  }
+
+  @keyframes flow-right {
+    0% {
+      transform: translateX(0);
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(calc(14vw - 2rem));
+      opacity: 0;
+    }
+  }
+</style>

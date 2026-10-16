@@ -1,0 +1,263 @@
+---
+/**
+ * Demo de IA: una tarea escrita y la respuesta en streaming. Ilustrativa.
+ * Sin JS se muestra la primera tarea completa.
+ */
+export interface StreamTask {
+  label: string;
+  prompt: string;
+  answer: string[];
+}
+interface Props {
+  tasks: StreamTask[];
+  tabs?: boolean;
+  class?: string;
+}
+const { tasks, tabs = false, class: className } = Astro.props;
+---
+
+<div class:list={['sd', className]} data-demo="stream" data-tasks={JSON.stringify(tasks)}>
+  {
+    tabs && (
+      <div class="sd__tabs" role="group" aria-label="Elige una tarea">
+        {tasks.map((t, i) => (
+          <button class="sd__tab" type="button" data-task aria-pressed={i === 0 ? 'true' : 'false'}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+    )
+  }
+  <div class="sd__window" data-ui>
+    <div class="sd__bar">
+      <span class="sd__badge"><span class="sd__dot"></span>Asistente</span>
+      <span class="sd__note">Ejemplo ilustrativo</span>
+    </div>
+    <div class="sd__row">
+      <span class="sd__who">Tú</span>
+      <p class="sd__prompt" data-prompt>{tasks[0].prompt}</p>
+    </div>
+    <div class="sd__row sd__row--ai">
+      <span class="sd__who sd__who--ai">IA</span>
+      <div class="sd__answer">
+        <span class="sd__thinking" aria-hidden="true"><span></span><span></span><span></span></span>
+        <div class="sd__out" data-output>
+          {tasks[0].answer.map((l) => <p>{l}</p>)}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import '@/scripts/demos';
+</script>
+
+<style>
+  .sd {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  .sd__tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .sd__tab {
+    min-height: 2.6rem;
+    padding: 0 1.1rem;
+    border-radius: var(--pill);
+    border: 1px solid var(--c-line);
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition:
+      background-color var(--t-fast) ease,
+      color var(--t-fast) ease,
+      border-color var(--t-fast) ease;
+  }
+
+  .sd__tab:hover {
+    border-color: var(--c-ink-soft);
+  }
+
+  .sd__tab[aria-pressed='true'] {
+    background: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-on-accent);
+  }
+
+  .sd__window {
+    display: grid;
+    gap: 1rem;
+    padding: 1.1rem 1.2rem 1.3rem;
+    border-radius: 22px;
+    background: rgb(255 255 255 / 0.04);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    color: #f4f1fb;
+    height: 19rem;
+    overflow: hidden;
+    align-content: start;
+  }
+
+  @media (max-width: 479px) {
+    .sd__window {
+      height: 23rem;
+    }
+  }
+
+  :global([data-theme='light']) .sd__window,
+  .sd--light .sd__window {
+    background: #fff;
+    border-color: var(--c-line);
+    color: var(--c-ink);
+  }
+
+  .sd__bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .sd__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 700;
+  }
+
+  .sd__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #3ddc84;
+    box-shadow: 0 0 0 3px rgb(61 220 132 / 0.2);
+  }
+
+  .sd__note {
+    color: #a9a2bf;
+  }
+
+  .sd--light .sd__note {
+    color: var(--c-ink-soft);
+  }
+
+  .sd__row {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .sd__who {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.1);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .sd--light .sd__who {
+    background: var(--paper-2);
+  }
+
+  .sd__who--ai {
+    background: linear-gradient(135deg, var(--violet), var(--violet-700));
+    color: #fff;
+  }
+
+  .sd__prompt {
+    padding-top: 0.3rem;
+    font-weight: 600;
+    line-height: 1.45;
+    min-height: 2.9em;
+  }
+
+  .sd__prompt::after,
+  .sd__out p:last-child::after {
+    content: '';
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: -0.12em;
+    background: var(--gold);
+    opacity: 0;
+  }
+
+  :global(html.js) .sd:not(.is-done) .sd__out p:last-child::after {
+    opacity: 1;
+    animation: sd-blink 0.9s steps(2) infinite;
+  }
+
+  @keyframes sd-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .sd__answer {
+    position: relative;
+    padding-top: 0.3rem;
+  }
+
+  .sd__out {
+    display: grid;
+    gap: 0.45rem;
+    line-height: 1.5;
+    color: #d9d3ea;
+  }
+
+  .sd--light .sd__out {
+    color: var(--c-ink);
+  }
+
+  .sd__out :global(p:first-child) {
+    font-weight: 700;
+    color: inherit;
+  }
+
+  .sd__thinking {
+    display: none;
+    gap: 5px;
+    padding-top: 0.4rem;
+  }
+
+  .sd.is-thinking .sd__thinking {
+    display: inline-flex;
+  }
+
+  .sd__thinking span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--violet-300);
+    animation: sd-think 1s ease-in-out infinite;
+  }
+
+  .sd__thinking span:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+
+  .sd__thinking span:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes sd-think {
+    0%,
+    100% {
+      opacity: 0.3;
+      transform: translateY(0);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-4px);
+    }
+  }
+</style>

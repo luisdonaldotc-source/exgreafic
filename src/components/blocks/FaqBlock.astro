@@ -1,0 +1,181 @@
+---
+/**
+ * Preguntas frecuentes como acordeón (<details>): el contenido sigue en el HTML
+ * para buscadores y asistentes, pero la página se lee más fácil.
+ * El schema FAQPage lo agrega la página.
+ */
+import type { Faq } from '@/content/faqs';
+
+interface Props {
+  id?: string;
+  title?: string;
+  faqs: Faq[];
+  theme?: 'ground' | 'surface' | 'dark';
+}
+const { id = 'preguntas', title = 'Preguntas frecuentes', faqs, theme = 'ground' } = Astro.props;
+---
+
+<section class="faq section" aria-labelledby={id} data-theme={theme === 'ground' ? undefined : theme}>
+  <div class="wrap faq__grid">
+    <div class="faq__aside">
+      <h2 id={id} class="t-head faq__title" data-split>{title}</h2>
+      <p class="faq__more">¿No está tu pregunta? <a href="/contacto/">Escríbenos</a>.</p>
+    </div>
+    <div class="faq__list" data-reveal>
+      {
+        faqs.map((f, i) => (
+          <details class="faq__item" name={`faq-${id}`} open={i === 0}>
+            <summary class="faq__q">
+              <span>{f.q}</span>
+              <span class="faq__icon" aria-hidden="true" />
+            </summary>
+            <div class="faq__a">
+              <p>{f.a}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__grid {
+    display: grid;
+    gap: var(--s-7);
+  }
+
+  .faq__aside {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+  }
+
+  .faq__title {
+    max-width: 12ch;
+  }
+
+  .faq__more {
+    color: var(--c-ink-soft);
+  }
+
+  .faq__more a {
+    font-weight: 700;
+    color: var(--c-ink);
+  }
+
+  .faq__list {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .faq__item {
+    border-radius: 20px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    transition: border-color var(--t-mid) ease;
+    interpolate-size: allow-keywords;
+  }
+
+  .faq__item[open] {
+    border-color: color-mix(in srgb, var(--c-accent) 45%, transparent);
+  }
+
+  .faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    min-height: 3.6rem;
+    padding: 1rem 1.3rem;
+    font-weight: 700;
+    font-size: var(--fs-body);
+    line-height: 1.35;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq__q::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__q:hover {
+    color: var(--c-accent);
+  }
+
+  .faq__icon {
+    position: relative;
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--c-accent) 12%, transparent);
+    transition:
+      transform var(--t-mid) var(--ease-out),
+      background-color var(--t-mid) ease;
+  }
+
+  .faq__icon::before,
+  .faq__icon::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.75rem;
+    height: 2px;
+    margin: -1px 0 0 -0.375rem;
+    border-radius: 2px;
+    background: var(--c-accent);
+  }
+
+  .faq__icon::after {
+    transform: rotate(90deg);
+  }
+
+  .faq__item[open] .faq__icon {
+    transform: rotate(45deg);
+    background: var(--c-accent);
+  }
+
+  .faq__item[open] .faq__icon::before,
+  .faq__item[open] .faq__icon::after {
+    background: var(--c-on-accent);
+  }
+
+  .faq__a {
+    padding: 0 1.3rem 1.2rem;
+  }
+
+  .faq__a p {
+    max-width: 62ch;
+    line-height: 1.6;
+    color: var(--c-ink-soft);
+  }
+
+  /* Apertura suave donde el navegador lo permite. */
+  @media (prefers-reduced-motion: no-preference) {
+    .faq__item::details-content {
+      block-size: 0;
+      overflow: hidden;
+      transition:
+        block-size 450ms var(--ease-out),
+        content-visibility 450ms allow-discrete;
+    }
+
+    .faq__item[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .faq__grid {
+      grid-template-columns: 4fr 8fr;
+      column-gap: var(--gap);
+    }
+
+    .faq__aside {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+</style>

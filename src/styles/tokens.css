@@ -1,0 +1,152 @@
+/*
+ * Sistema de diseño v2 — tokens
+ *
+ * Oscuro como base (violeta casi negro), secciones claras para lectura larga.
+ * Morado #7c3aed = marca. Dorado #f5c451 = acción y énfasis.
+ * Una sola familia: Satoshi (variable 300–900).
+ *
+ * Los nombres de rol (--c-ground, --c-ink, --c-surface...) se conservan para que
+ * los bloques funcionen en fondo claro y, con data-theme="dark", en fondo oscuro.
+ */
+:root {
+  /* ---------- Paleta ---------- */
+  --violet: #7c3aed;
+  --violet-600: #6d28d9;
+  --violet-700: #5b21b6;
+  --violet-300: #a78bfa;
+  --violet-200: #c4b5fd;
+  --violet-50: #f1ecfe;
+  --gold: #f5c451;
+  --gold-600: #e3ab2c;
+  --gold-50: #fdf5dc;
+
+  --night: #0b0912;
+  --night-2: #13101d;
+  --night-3: #1c1829;
+  --paper: #f6f4f0;
+  --paper-2: #ece8f4;
+
+  /* ---------- Roles (fondo claro por defecto) ---------- */
+  --c-ground: var(--paper);
+  --c-surface: #ffffff;
+  --c-surface-2: var(--paper-2);
+  --c-ink: #120f1c;
+  --c-ink-soft: #5a5470;
+  --c-line: rgb(18 15 28 / 0.12);
+  --c-accent: var(--violet);
+  --c-accent-strong: var(--violet-600);
+  --c-on-accent: #ffffff;
+  --c-highlight: var(--violet);
+
+  --c-inverse: var(--night);
+  --c-on-inverse: #f4f1fb;
+  --c-on-inverse-soft: #aaa3c0;
+  --c-accent-on-inverse: var(--gold);
+
+  --c-error: #a81f26;
+  --c-error-on-inverse: #ff9aa2;
+  --c-focus: var(--violet);
+  --c-selection: #e0d4fd;
+
+  /* ---------- Tipografía ---------- */
+  --font-serif: var(--font-sans); /* compatibilidad: ya no hay serif */
+
+  --fs-display: clamp(2.75rem, 1.35rem + 5.7vw, 7.25rem);
+  --fs-head: clamp(2.1rem, 1.35rem + 3vw, 4.25rem);
+  --fs-statement: clamp(1.45rem, 1.1rem + 1.3vw, 2.25rem);
+  --fs-lead: clamp(1.15rem, 1.02rem + 0.5vw, 1.5rem);
+  --fs-body: clamp(1rem, 0.97rem + 0.15vw, 1.125rem);
+  --fs-small: 0.875rem;
+  --fs-label: 0.8125rem;
+
+  --lh-display: 0.95;
+  --lh-head: 1.02;
+  --lh-lead: 1.4;
+  --lh-body: 1.6;
+
+  --tr-display: -0.045em;
+  --tr-head: -0.035em;
+  --tr-lead: -0.01em;
+  --tr-label: 0.14em;
+
+  --fw-display: 700;
+  --fw-head: 700;
+  --fw-strong: 700;
+  --fw-ui: 600;
+
+  --measure: 62ch;
+  --measure-narrow: 42ch;
+
+  /* ---------- Espacio ---------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+  --s-10: 8rem;
+
+  --margin: clamp(1.25rem, 3.6vw, 3.5rem);
+  --gap: clamp(1rem, 2vw, 2rem);
+  --section: clamp(5.5rem, 11vw, 11.5rem);
+  --max: 1520px;
+
+  /* ---------- Formas ---------- */
+  --radius-s: 12px;
+  --radius: 20px;
+  --radius-l: 32px;
+  --pill: 999px;
+  --control-h: 3.25rem;
+  --header-h: 5.25rem;
+
+  --shadow-float: 0 30px 80px -30px rgb(11 9 18 / 0.55);
+
+  /* ---------- Movimiento ---------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --t-fast: 180ms;
+  --t-mid: 380ms;
+  --t-slow: 900ms;
+  --stagger: 70ms;
+  --rise: 28px;
+}
+
+/* Secciones oscuras: los mismos roles, invertidos. */
+[data-theme='dark'],
+[data-theme='inverse'] {
+  --c-ground: var(--night);
+  --c-surface: var(--night-2);
+  --c-surface-2: var(--night-3);
+  --c-ink: #f4f1fb;
+  --c-ink-soft: #aaa3c0;
+  --c-line: rgb(255 255 255 / 0.1);
+  --c-accent: var(--gold);
+  --c-accent-strong: var(--gold-600);
+  --c-on-accent: #16111f;
+  --c-highlight: var(--gold);
+  --c-focus: var(--gold);
+  --c-error: var(--c-error-on-inverse);
+}
+
+[data-theme='accent'] {
+  --c-ground: var(--violet);
+  --c-surface: var(--violet-600);
+  --c-surface-2: var(--violet-700);
+  --c-ink: #ffffff;
+  --c-ink-soft: #ebe4fe;
+  --c-line: rgb(255 255 255 / 0.22);
+  --c-accent: var(--gold);
+  --c-accent-strong: var(--gold-600);
+  --c-on-accent: #16111f;
+  --c-highlight: var(--gold);
+  --c-focus: var(--gold);
+}
+
+[data-theme='surface'] {
+  --c-ground: var(--paper-2);
+  --c-surface: #ffffff;
+}

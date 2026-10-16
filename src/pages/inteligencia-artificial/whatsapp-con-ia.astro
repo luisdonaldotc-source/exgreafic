@@ -1,0 +1,124 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import Conversation from '@/components/ia/Conversation.astro';
+import ChatDemo from '@/components/demos/ChatDemo.astro';
+import ListBlock from '@/components/blocks/ListBlock.astro';
+import SplitText from '@/components/blocks/SplitText.astro';
+import StatBlock from '@/components/blocks/StatBlock.astro';
+import Steps from '@/components/blocks/Steps.astro';
+import FaqBlock from '@/components/blocks/FaqBlock.astro';
+import RelatedServices from '@/components/blocks/RelatedServices.astro';
+import ClosingCta from '@/components/blocks/ClosingCta.astro';
+import { whatsappFaqs } from '@/content/faqs';
+import { service, faqPage } from '@/lib/schema';
+
+const base = Astro.site ?? new URL(Astro.url.origin);
+const path = '/inteligencia-artificial/whatsapp-con-ia/';
+const description =
+  'Asistentes con IA para WhatsApp que responden con información aprobada, califican prospectos, agendan cuando hay integración y pasan la conversación a una persona cuando hace falta.';
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Inteligencia Artificial', path: '/inteligencia-artificial/' },
+  { name: 'WhatsApp con IA', path },
+];
+---
+
+<BaseLayout
+  title="WhatsApp con IA para empresas"
+  description={description}
+  crumbs={crumbs}
+  active="ia"
+  schema={[service(base, { name: 'WhatsApp con inteligencia artificial', description, path }), faqPage(whatsappFaqs)]}
+>
+  <PageHero
+    title="WhatsApp con IA"
+    statement="Que tu WhatsApp pueda responder, orientar y avanzar una conversación."
+    text="Creamos asistentes con IA preparados con la información y las reglas de tu negocio para atender mejor, sin convertir la experiencia en un menú de “escribe 1, escribe 2”."
+    cta={{ label: 'Quiero revisar mi WhatsApp', href: '/contacto/?tema=whatsapp' }}
+    secondary={{ label: 'Ver ejemplos', href: '#convo-titulo' }}
+    crumbs={crumbs}
+    family="ia"
+  >
+    <div slot="aside" class="phone-wrap">
+      <ChatDemo phone />
+    </div>
+  </PageHero>
+
+  <Conversation />
+
+  <ListBlock
+    id="que-puede-hacer"
+    title="Qué puede hacer"
+    variant="large"
+    theme="surface"
+    items={[
+      'Responder preguntas frecuentes con información aprobada.',
+      'Pedir y organizar los datos del cliente.',
+      'Identificar qué necesita una persona y orientarla.',
+      'Calificar prospectos antes de pasarlos a ventas.',
+      'Recomendar productos o servicios con una lógica definida.',
+      'Ayudar con citas o solicitudes cuando hay integración.',
+      'Compartir enlaces, documentos y siguientes pasos.',
+      'Resumir la conversación para que una persona continúe con contexto.',
+    ]}
+  />
+
+  <SplitText
+    id="ayuda-al-equipo"
+    title="Ayuda a tu equipo"
+    emphasis
+    paragraphs={[
+      'No lo sustituye: resuelve lo repetitivo, ordena la información y prepara el contexto.',
+      'Las conversaciones que necesitan criterio, empatía o una decisión comercial pasan a una persona. Tú decides qué puede responder, qué no y en qué momento interviene tu equipo.',
+    ]}
+  />
+
+  <StatBlock
+    id="oportunidad"
+    title="La oportunidad es real"
+    theme="accent"
+    facts={[
+      {
+        figure: '+1',
+        unit: 'millón de empresas',
+        text: 'ya usaban el agente comercial de Meta en WhatsApp y Messenger para responder a sus clientes, según Meta.',
+        source: 'metaBusinessAgent',
+      },
+      {
+        figure: '+3',
+        unit: 'mil millones de personas',
+        text: 'usan WhatsApp, de acuerdo con Meta.',
+        source: 'metaWhatsapp',
+      },
+    ]}
+    conclusion="No significa que todo deba tener un bot. Si WhatsApp ya concentra preguntas, solicitudes o ventas en tu negocio, hay una oportunidad clara de responder más rápido y dar mejor seguimiento."
+  />
+
+  <Steps
+    id="como-lo-construimos"
+    title="Cómo lo construimos"
+    steps={[
+      { title: 'Mapeamos', text: 'Las preguntas, intenciones y procesos de tus clientes.' },
+      { title: 'Delimitamos', text: 'Qué información puede usar el asistente y qué no.' },
+      { title: 'Diseñamos', text: 'Respuestas, acciones, captura de datos y reglas para pasar a una persona.' },
+      { title: 'Probamos', text: 'Conversaciones simples, ambiguas y fuera de alcance.' },
+      { title: 'Medimos', text: 'Qué pregunta la gente y dónde hace falta ajustar.' },
+    ]}
+  />
+
+  <FaqBlock faqs={whatsappFaqs} theme="surface" />
+  <RelatedServices slugs={['automatizacion-y-crm', 'meta-ads', 'ia-para-tu-negocio', 'analitica-y-medicion']} />
+  <ClosingCta
+    title="Revisemos tu WhatsApp"
+    text="Nos cuentas qué te preguntan más y cómo atiendes hoy. Te decimos qué puede resolver un asistente y qué no."
+    cta={{ label: 'Quiero mejorar mi WhatsApp', href: '/contacto/?tema=whatsapp' }}
+  />
+</BaseLayout>
+
+<style>
+  .phone-wrap {
+    display: grid;
+    place-items: center;
+  }
+</style>

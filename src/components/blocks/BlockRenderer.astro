@@ -1,0 +1,45 @@
+---
+/** Traduce los bloques de content/servicePages.ts a componentes. */
+import type { Block } from '@/content/servicePages';
+import ListBlock from './ListBlock.astro';
+import PairsTable from './PairsTable.astro';
+import SplitText from './SplitText.astro';
+import Steps from './Steps.astro';
+import FormatRows from './FormatRows.astro';
+import Note from './Note.astro';
+import StatBlock from './StatBlock.astro';
+import VideoBand from './VideoBand.astro';
+import FaqBlock from './FaqBlock.astro';
+
+interface Props {
+  blocks: Block[];
+  prefix: string;
+}
+const { blocks, prefix } = Astro.props;
+---
+
+{
+  blocks.map((b, i) => {
+    const id = `${prefix}-${i + 1}`;
+    switch (b.type) {
+      case 'list':
+        return <ListBlock id={id} {...b} />;
+      case 'pairs':
+        return <PairsTable id={id} {...b} />;
+      case 'split':
+        return <SplitText id={id} {...b} />;
+      case 'steps':
+        return <Steps id={id} {...b} />;
+      case 'rows':
+        return <FormatRows id={id} {...b} />;
+      case 'note':
+        return <Note id={id} {...b} />;
+      case 'stat':
+        return <StatBlock id={id} {...b} />;
+      case 'video':
+        return <VideoBand {...b} />;
+      case 'faq':
+        return <FaqBlock id={id} {...b} />;
+    }
+  })
+}

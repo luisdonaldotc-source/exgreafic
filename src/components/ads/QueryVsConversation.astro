@@ -1,0 +1,218 @@
+---
+/**
+ * Por qué una conversación puede mostrar intención: una búsqueda corta frente a
+ * una pregunta con contexto. Incluye la aclaración de privacidad (fuente: OpenAI).
+ */
+import Cite from '@/components/ui/Cite.astro';
+import SourceList from '@/components/ui/SourceList.astro';
+---
+
+<section class="qvc section" data-theme="dark" aria-labelledby="qvc-titulo">
+  <div class="wrap">
+    <div class="qvc__head">
+      <h2 id="qvc-titulo" class="t-head" data-split>Por qué el contexto importa</h2>
+      <p class="t-lead qvc__intro">
+        Una búsqueda dice qué quiere alguien. Una conversación también suele decir para qué, en qué situación y qué le
+        preocupa.
+      </p>
+    </div>
+
+    <div class="qvc__compare" data-reveal>
+      <figure class="qvc__case">
+        <figcaption class="qvc__label">Una búsqueda</figcaption>
+        <div class="qvc__query" data-ui>
+          <span class="qvc__glass" aria-hidden="true"></span>
+          <span>software contable</span>
+        </div>
+        <p class="qvc__read">Sabemos el tema. No sabemos el tamaño de la empresa, el problema ni la urgencia.</p>
+      </figure>
+
+      <figure class="qvc__case">
+        <figcaption class="qvc__label">Una conversación</figcaption>
+        <div class="qvc__chat" data-ui>
+          Tengo un despacho de seis personas, llevamos la contabilidad de unas 40 empresas y seguimos usando hojas de
+          cálculo. ¿Qué opciones tengo para ordenar esto sin cambiar todo de golpe?
+        </div>
+        <p class="qvc__read">El momento es otro: alguien está explorando opciones y explicando qué necesita resolver.</p>
+      </figure>
+    </div>
+
+    <div class="qvc__foot grid">
+      <p class="qvc__note" data-reveal="self">
+        OpenAI describe su propuesta publicitaria como basada en señales de contexto más ricas que una palabra clave
+        aislada.<Cite n={1} scope="contexto" /> Eso abre la posibilidad de aparecer en momentos de exploración y decisión,
+        no solo cuando alguien ya escribió el nombre de lo que busca.
+      </p>
+      <div class="qvc__privacy" data-reveal="self">
+        <p class="qvc__privacy-title">El anunciante no ve la conversación</p>
+        <p>
+          Según OpenAI, las conversaciones no se comparten con los anunciantes, que reciben información agregada sobre
+          el desempeño de sus anuncios.<Cite n={2} scope="contexto" /> Los anuncios aparecen separados de las respuestas y
+          no cambian lo que el asistente contesta.
+        </p>
+      </div>
+      <div class="qvc__sources">
+        <SourceList ids={['openaiAdsSite', 'openaiHelpAds']} scope="contexto" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .qvc__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-7);
+  }
+
+  .qvc__intro {
+    max-width: 44ch;
+  }
+
+  @media (min-width: 1024px) {
+    .qvc__head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+
+  .qvc__compare {
+    display: grid;
+    gap: var(--gap);
+  }
+
+  @media (min-width: 900px) {
+    .qvc__compare {
+      grid-template-columns: 5fr 7fr;
+    }
+  }
+
+  .qvc__case {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    padding: clamp(1.4rem, 2.6vw, 2.2rem);
+    border-radius: 28px;
+    background: var(--night-2);
+    border: 1px solid rgb(255 255 255 / 0.08);
+  }
+
+  .qvc__case:last-child {
+    background:
+      radial-gradient(70% 80% at 100% 0%, rgb(124 58 237 / 0.35), transparent 70%),
+      var(--night-2);
+    border-color: rgb(167 139 250 / 0.3);
+  }
+
+  .qvc__label {
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .qvc__query {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3.6rem;
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--pill);
+    background: #fff;
+    color: #16111f;
+    font-size: var(--fs-lead);
+    font-weight: 600;
+  }
+
+  .qvc__glass {
+    position: relative;
+    flex: none;
+    width: 1.05rem;
+    height: 1.05rem;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+  }
+
+  .qvc__glass::after {
+    content: '';
+    position: absolute;
+    right: -0.42rem;
+    bottom: -0.3rem;
+    width: 0.5rem;
+    height: 2px;
+    background: currentColor;
+    transform: rotate(45deg);
+  }
+
+  .qvc__chat {
+    padding: 1.1rem 1.3rem;
+    border-radius: 22px 22px 6px 22px;
+    background: rgb(255 255 255 / 0.1);
+    color: #fff;
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .qvc__read {
+    max-width: 44ch;
+    color: var(--c-ink-soft);
+    line-height: 1.5;
+  }
+
+  .qvc__foot {
+    margin-top: var(--s-8);
+    row-gap: var(--s-6);
+  }
+
+  .qvc__note {
+    grid-column: 1 / -1;
+    max-width: 30ch;
+    font-size: clamp(1.4rem, 1.05rem + 1.4vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+
+  .qvc__privacy {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--s-2);
+    padding: 1.4rem 1.5rem;
+    border-radius: 22px;
+    background: rgb(245 196 81 / 0.08);
+    border: 1px solid rgb(245 196 81 / 0.35);
+    color: #ded8ee;
+    line-height: 1.55;
+  }
+
+  .qvc__privacy-title {
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .qvc__sources {
+    grid-column: 1 / -1;
+  }
+
+  .qvc__sources :global(.sources) {
+    color: var(--c-ink-soft);
+  }
+
+  .qvc__sources :global(a) {
+    color: inherit;
+  }
+
+  @media (min-width: 1024px) {
+    .qvc__note {
+      grid-column: 1 / span 6;
+    }
+
+    .qvc__privacy,
+    .qvc__sources {
+      grid-column: 8 / -1;
+    }
+  }
+</style>

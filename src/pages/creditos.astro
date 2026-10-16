@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Prose from '@/components/blocks/Prose.astro';
+
+const videos = [
+  {
+    title: 'Vista aérea nocturna de una gran ciudad',
+    use: 'Inicio y Publicidad',
+    url: 'https://mixkit.co/free-stock-video/aerial-view-of-the-nightlife-of-a-huge-city-42041/',
+  },
+  {
+    title: 'Recorrido sobre una ciudad al atardecer',
+    use: 'Estrategia y Contenido, cierres de página',
+    url: 'https://mixkit.co/free-stock-video/tour-high-above-a-city-at-dusk-41375/',
+  },
+  {
+    title: 'Glorieta vista desde arriba, de noche',
+    use: 'Web y Automatización',
+    url: 'https://mixkit.co/free-stock-video/top-view-of-the-traffic-around-a-roundabout-at-night-50998/',
+  },
+];
+---
+
+<BaseLayout
+  title="Créditos"
+  description="Procedencia y licencias de los videos y la tipografía usados en este sitio."
+  noindex
+>
+  <Prose title="Créditos" intro="Los videos y la tipografía del sitio tienen licencia para uso comercial.">
+    <h2>Videos</h2>
+    <ul>
+      {
+        videos.map((v) => (
+          <li>
+            {v.title} ({v.use}). Mixkit, bajo la Mixkit Stock Video Free License (permite uso comercial).{' '}
+            <a href={v.url} rel="noopener">
+              Ver fuente
+            </a>
+            .
+          </li>
+        ))
+      }
+    </ul>
+    <p>Los videos se recortaron, se comprimieron y se usan con un tinte de color de la marca.</p>
+
+    <h2>Tipografía</h2>
+    <ul>
+      <li>
+        Satoshi, de Indian Type Foundry, distribuida por Fontshare bajo la ITF Free Font License, que permite uso
+        comercial.
+      </li>
+    </ul>
+  </Prose>
+</BaseLayout>

@@ -1,0 +1,337 @@
+---
+/**
+ * Apertura de páginas internas (oscura).
+ * Fondo según el área: video (Publicidad, Contenido, Web), campo de puntos (IA)
+ * o luz de marca. A la derecha puede llevar un módulo propio (slot "aside").
+ */
+import Arrow from '@/components/ui/Arrow.astro';
+import ParticleField from '@/components/ia/ParticleField.astro';
+import type { Crumb } from '@/lib/schema';
+
+type Media = 'ciudad' | 'atardecer' | 'glorieta' | 'particles' | 'glow';
+
+interface Props {
+  title: string;
+  statement: string;
+  text?: string;
+  cta?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+  crumbs?: Crumb[];
+  /** Fondo. Si no se indica, se elige por área (familia). */
+  media?: Media;
+  family?: string;
+  size?: 'display' | 'head';
+  /** Texto del campo de puntos cuando media = particles. */
+  particlesText?: string;
+}
+
+const { title, statement, text, cta, secondary, crumbs, family, size = 'display', particlesText = 'IA' } = Astro.props;
+const byFamily: Record<string, Media> = { ia: 'particles', publicidad: 'ciudad', contenido: 'atardecer', web: 'glorieta' };
+const media: Media = Astro.props.media ?? (family ? byFamily[family] : undefined) ?? 'glow';
+const hasAside = Astro.slots.has('aside');
+const isVideo = media === 'ciudad' || media === 'atardecer' || media === 'glorieta';
+const videoSrc = media === 'glorieta' ? '/video/glorieta-1280.mp4' : `/video/${media}-960.mp4`;
+---
+
+<section class:list={['ph', hasAside && 'ph--aside', `ph--${media}`]} data-theme="dark" aria-labelledby="titulo-pagina">
+  <div class="ph__bg" aria-hidden="true">
+    {
+      isVideo && (
+        <video class="ph__video" autoplay muted loop playsinline preload="metadata" poster={`/video/${media}-poster.jpg`} data-autoplay>
+          <source src={videoSrc} type="video/mp4" />
+        </video>
+      )
+    }
+    <div class="ph__shade"></div>
+  </div>
+
+  {
+    media === 'particles' && !hasAside && (
+      <div class="ph__particles">
+        <ParticleField text={particlesText} />
+      </div>
+    )
+  }
+
+  <div class="wrap ph__grid">
+    <div class="ph__main">
+      {
+        crumbs && crumbs.length > 1 && (
+          <nav class="ph__crumbs" aria-label="Ruta">
+            <ol>
+              {crumbs.slice(0, -1).map((c) => (
+                <li>
+                  <a href={c.path}>{c.name}</a>
+                </li>
+              ))}
+              <li aria-current="page">{crumbs[crumbs.length - 1].name}</li>
+            </ol>
+          </nav>
+        )
+      }
+      <h1 id="titulo-pagina" class:list={['ph__title', size === 'head' && 'ph__title--head']} data-split data-split-now>
+        {title}
+      </h1>
+      <p class="ph__statement">{statement}</p>
+      {text && <p class="ph__text">{text}</p>}
+      {
+        (cta || secondary) && (
+          <div class="ph__actions">
+            {cta && (
+              <a class="btn btn--gold" href={cta.href} data-magnetic="0.2">
+                <span>{cta.label}</span>
+                <span class="btn__arrow">
+                  <Arrow />
+                </span>
+              </a>
+            )}
+            {secondary && (
+              <a class="btn btn--ghost btn--plain" href={secondary.href}>
+                {secondary.label}
+              </a>
+            )}
+          </div>
+        )
+      }
+    </div>
+
+    {
+      hasAside && (
+        <div class="ph__aside">
+          <slot name="aside" />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .ph {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(92svh, 860px);
+    padding: calc(var(--header-h) + var(--s-8)) 0 clamp(3rem, 8vh, 6rem);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .ph--aside {
+    align-items: center;
+  }
+
+  /* ---------- Fondo ---------- */
+  .ph__bg {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(50% 60% at 85% 20%, rgb(124 58 237 / 0.35), transparent 70%),
+      radial-gradient(35% 45% at 10% 100%, rgb(245 196 81 / 0.12), transparent 70%),
+      var(--night);
+  }
+
+  .ph__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ph__shade {
+    position: absolute;
+    inset: 0;
+  }
+
+  .ph--ciudad .ph__shade,
+  .ph--atardecer .ph__shade,
+  .ph--glorieta .ph__shade {
+    background:
+      linear-gradient(180deg, rgb(11 9 18 / 0.75) 0%, rgb(11 9 18 / 0.3) 35%, rgb(11 9 18 / 0.88) 100%),
+      linear-gradient(100deg, rgb(91 33 182 / 0.55) 0%, rgb(124 58 237 / 0.1) 60%, transparent 85%);
+  }
+
+  .ph__particles {
+    position: absolute;
+    z-index: -1;
+    top: calc(var(--header-h) + 1rem);
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    opacity: 0.55;
+  }
+
+  @media (min-width: 1024px) {
+    .ph__particles {
+      left: 46%;
+      width: auto;
+      opacity: 1;
+    }
+
+    .ph--particles .ph__main {
+      max-width: min(44vw, 40rem);
+    }
+  }
+
+  /* ---------- Contenido ---------- */
+  .ph__grid {
+    display: grid;
+    gap: var(--s-8);
+    align-items: center;
+  }
+
+  .ph__main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-5);
+    max-width: 52rem;
+  }
+
+  .ph__crumbs ol {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 0;
+    padding: 0.35rem 0.9rem;
+    border-radius: var(--pill);
+    background: rgb(255 255 255 / 0.07);
+    border: 1px solid rgb(255 255 255 / 0.12);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    font-size: var(--fs-small);
+    color: #c9c2dc;
+  }
+
+  .ph__crumbs li:not(:last-child)::after {
+    content: '/';
+    margin-inline: 0.55em;
+    opacity: 0.5;
+  }
+
+  .ph__crumbs a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .ph__crumbs a:hover {
+    color: #fff;
+  }
+
+  .ph__crumbs [aria-current] {
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .ph__title {
+    font-size: clamp(2.8rem, 1.4rem + 5.4vw, 6.6rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+    max-width: 14ch;
+  }
+
+  .ph__title--head {
+    font-size: clamp(2.4rem, 1.3rem + 3.8vw, 5rem);
+    max-width: 18ch;
+  }
+
+  .ph__statement {
+    max-width: 32ch;
+    font-size: clamp(1.35rem, 1.05rem + 1.1vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    color: #fff;
+  }
+
+  .ph__text {
+    max-width: 52ch;
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    color: #c9c2dc;
+  }
+
+  .ph__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3);
+    margin-top: var(--s-3);
+  }
+
+  .ph__actions .btn--ghost {
+    --btn-fg: #fff;
+    border-color: rgb(255 255 255 / 0.28);
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .ph__statement,
+    :global(html.js) .ph__text,
+    :global(html.js) .ph__actions,
+    :global(html.js) .ph__crumbs,
+    :global(html.js) .ph__aside {
+      animation: ph-in 1s var(--ease-out) both;
+      animation-delay: 300ms;
+    }
+
+    :global(html.js) .ph__text {
+      animation-delay: 400ms;
+    }
+
+    :global(html.js) .ph__actions {
+      animation-delay: 500ms;
+    }
+
+    :global(html.js) .ph__crumbs {
+      animation-delay: 100ms;
+    }
+
+    :global(html.js) .ph__aside {
+      animation-delay: 450ms;
+    }
+
+    .ph__video {
+      animation: ph-zoom 1.8s var(--ease-out) both;
+    }
+  }
+
+  @keyframes ph-in {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes ph-zoom {
+    from {
+      opacity: 0;
+      transform: scale(1.1);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Demos sobre video: vidrio oscuro para que se lean. */
+  .ph__aside :global(.ads),
+  .ph__aside :global(.sd__window) {
+    background: rgb(14 11 22 / 0.78);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+    border-color: rgb(255 255 255 / 0.14);
+    box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.7); /* taste-skill-ignore: demo flotante */
+  }
+
+  @media (min-width: 1024px) {
+    .ph--aside .ph__grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    }
+  }
+</style>

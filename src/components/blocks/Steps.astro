@@ -1,0 +1,174 @@
+---
+/**
+ * Proceso por etapas: tarjetas numeradas unidas por una línea que se llena
+ * (violeta → dorado) al entrar en pantalla. En móvil, lista vertical.
+ */
+interface Step {
+  title: string;
+  text?: string;
+}
+interface Props {
+  id: string;
+  title: string;
+  intro?: string;
+  steps: Step[];
+  theme?: 'ground' | 'surface' | 'inverse' | 'dark';
+}
+const { id, title, intro, steps, theme = 'ground' } = Astro.props;
+---
+
+<section class="steps section" aria-labelledby={id} data-theme={theme === 'ground' ? undefined : theme}>
+  <div class="wrap">
+    <div class="steps__head">
+      <h2 id={id} class="t-head steps__title" data-split>{title}</h2>
+      {intro && <p class="t-lead steps__intro">{intro}</p>}
+    </div>
+    <ol class="steps__list" style={`--n: ${steps.length}`} data-reveal>
+      {
+        steps.map((s, i) => (
+          <li class="steps__item">
+            <span class="steps__num" aria-hidden="true">
+              {i + 1}
+            </span>
+            <span class="steps__name">{s.title}</span>
+            {s.text && <span class="steps__text">{s.text}</span>}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-8);
+  }
+
+  .steps__title {
+    max-width: 16ch;
+  }
+
+  .steps__intro {
+    max-width: 44ch;
+  }
+
+  @media (min-width: 1024px) {
+    .steps__head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+
+  .steps__list {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  .steps__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 0.35rem var(--s-4);
+    padding: 1.2rem 1.3rem;
+    border-radius: 22px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    transition:
+      transform var(--t-mid) var(--ease-out),
+      border-color var(--t-mid) ease;
+  }
+
+  .steps__item:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--c-accent) 45%, transparent);
+  }
+
+  .steps__num {
+    grid-row: 1 / span 2;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--violet), var(--violet-700));
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.1rem;
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--violet) 16%, transparent);
+  }
+
+  .steps__item:last-child .steps__num {
+    background: var(--gold);
+    color: #16111f;
+    box-shadow: 0 0 0 6px rgb(245 196 81 / 0.2);
+  }
+
+  .steps__name {
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .steps__text {
+    max-width: 36ch;
+    line-height: 1.5;
+    color: var(--c-ink-soft);
+  }
+
+  @media (min-width: 960px) {
+    .steps__list {
+      grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+      gap: var(--gap);
+    }
+
+    /* Línea que une las etapas. */
+    .steps__list::before {
+      content: '';
+      position: absolute;
+      left: 2.8rem;
+      right: 2.8rem;
+      top: 2.7rem;
+      height: 3px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--violet), var(--gold));
+      transform-origin: left center;
+      z-index: 0;
+    }
+
+    .steps__item {
+      grid-template-columns: 1fr;
+      align-content: start;
+      gap: var(--s-3);
+      background: transparent;
+      border-color: transparent;
+      padding: 1.2rem 0.4rem 0;
+    }
+
+    .steps__item:hover {
+      border-color: transparent;
+    }
+
+    .steps__num {
+      grid-row: auto;
+      position: relative;
+      z-index: 1;
+      margin-bottom: var(--s-3);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) and (min-width: 960px) {
+    :global(html.js:not(.no-reveal)) .steps__list::before {
+      transform: scaleX(0);
+      transition: transform 1.4s var(--ease-out) 200ms;
+    }
+
+    :global(html.js:not(.no-reveal)) .steps__list:global(.is-in)::before {
+      transform: none;
+    }
+  }
+</style>

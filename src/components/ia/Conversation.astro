@@ -1,0 +1,377 @@
+---
+/**
+ * Conversaciones de ejemplo para WhatsApp con IA. Son ilustrativas (negocios
+ * hipotéticos) y así se indica. Cada número enlaza el mensaje con su explicación.
+ */
+type Role = 'cliente' | 'asistente' | 'equipo';
+interface Message {
+  role: Role;
+  text: string;
+  attachment?: string;
+  note?: number;
+}
+interface Scenario {
+  id: string;
+  label: string;
+  business: string;
+  messages: Message[];
+  handoff: string;
+  notes: string[];
+}
+
+const scenarios: Scenario[] = [
+  {
+    id: 'clinica',
+    label: 'Clínica dental',
+    business: 'Clínica dental · asistente en WhatsApp',
+    messages: [
+      { role: 'cliente', text: 'Hola, ¿cuánto cuesta una limpieza dental?' },
+      {
+        role: 'asistente',
+        text: 'Hola, gracias por escribir. La limpieza incluye revisión general y dura unos 40 minutos. El precio cambia si es tu primera visita: ¿ya eres paciente de la clínica?',
+        note: 1,
+      },
+      { role: 'cliente', text: 'No, sería la primera vez.' },
+      {
+        role: 'asistente',
+        text: 'Perfecto. Para primera visita hay lugar el jueves a las 10:00 o el viernes a las 17:30. ¿Cuál te acomoda?',
+        note: 2,
+      },
+      { role: 'cliente', text: 'El viernes. ¿Aceptan seguro de gastos médicos?' },
+      {
+        role: 'asistente',
+        text: 'Te aparto el viernes a las 17:30. Lo del seguro lo revisa mejor alguien de recepción: le paso tu conversación para que te confirme.',
+        note: 3,
+      },
+    ],
+    handoff: 'Conversación enviada a recepción con resumen: primera visita, viernes 17:30, pregunta por seguro.',
+    notes: [
+      'Responde con información aprobada por la clínica y hace la pregunta que necesita para orientar.',
+      'Ofrece horarios disponibles porque está conectado a la agenda.',
+      'Reconoce lo que no debe contestar y pasa la conversación a una persona, sin que el paciente repita nada.',
+    ],
+  },
+  {
+    id: 'distribuidor',
+    label: 'Distribuidor B2B',
+    business: 'Distribuidor de mobiliario de oficina · asistente en WhatsApp',
+    messages: [
+      { role: 'cliente', text: 'Buenas tardes, quiero cotizar sillas de oficina para un proyecto.' },
+      {
+        role: 'asistente',
+        text: 'Con gusto. Para preparar una cotización útil, ¿cuántas piezas necesitas y en qué ciudad sería la entrega?',
+        note: 1,
+      },
+      { role: 'cliente', text: 'Unas 80, para Monterrey.' },
+      {
+        role: 'asistente',
+        text: 'Gracias. Te comparto el catálogo de sillas ergonómicas para que veas los modelos.',
+        attachment: 'Catálogo de sillas de oficina · PDF',
+        note: 2,
+      },
+      { role: 'cliente', text: 'Perfecto, me interesan las de malla.' },
+      {
+        role: 'asistente',
+        text: 'Anotado. Por el volumen, un asesor te prepara precios de proyecto. ¿A qué correo te los enviamos?',
+        note: 3,
+      },
+    ],
+    handoff: 'Prospecto registrado en el CRM y asignado a ventas: 80 sillas de malla, entrega en Monterrey.',
+    notes: [
+      'Pide solo los datos que ventas necesita para cotizar.',
+      'Comparte documentos y enlaces aprobados.',
+      'Detecta una oportunidad de volumen, la registra y la pasa a un asesor con todo el contexto.',
+    ],
+  },
+];
+---
+
+<section class="convo section" aria-labelledby="convo-titulo">
+  <div class="wrap">
+    <div class="convo__head">
+      <h2 id="convo-titulo" class="t-head" data-split>Una conversación, no un menú</h2>
+      <p class="t-lead convo__intro">
+        Dos ejemplos ilustrativos. Cada asistente se diseña con la información, el tono y las reglas de tu negocio.
+      </p>
+    </div>
+
+    <div class="convo__body" data-tabs>
+      <div class="convo__tabs" role="tablist" aria-label="Ejemplos de conversación" hidden data-tablist>
+        {
+          scenarios.map((s, i) => (
+            <button
+              class="convo__tab"
+              type="button"
+              role="tab"
+              id={`tab-${s.id}`}
+              aria-controls={`convo-${s.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+            >
+              {s.label}
+            </button>
+          ))
+        }
+      </div>
+
+      {
+        scenarios.map((s) => (
+          <div class="convo__panel" id={`convo-${s.id}`} role="tabpanel" aria-labelledby={`tab-${s.id}`} data-panel>
+            <div class="chat" data-ui>
+              <p class="chat__business">{s.business}</p>
+              <ol class="chat__list" data-reveal aria-label={`Conversación de ejemplo: ${s.label}`}>
+                {s.messages.map((m) => (
+                  <li class={`msg msg--${m.role}`}>
+                    <span class="visually-hidden">{m.role === 'cliente' ? 'Cliente:' : 'Asistente:'}</span>
+                    <span class="msg__bubble">
+                      {m.text}
+                      {m.attachment && <span class="msg__file">{m.attachment}</span>}
+                    </span>
+                    {m.note && (
+                      <span class="msg__note" aria-hidden="true">
+                        {m.note}
+                      </span>
+                    )}
+                  </li>
+                ))}
+                <li class="msg msg--handoff">
+                  <span class="msg__handoff">{s.handoff}</span>
+                </li>
+              </ol>
+            </div>
+            <ol class="convo__notes">
+              {s.notes.map((n, i) => (
+                <li>
+                  <span class="convo__n" aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  <span>{n}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  import '@/scripts/tabs';
+</script>
+
+<style>
+  .convo__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-6);
+  }
+
+  .convo__intro {
+    max-width: 44ch;
+  }
+
+  @media (min-width: 1024px) {
+    .convo__head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+
+  .convo__tabs {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    padding: 0.35rem;
+    margin-bottom: var(--s-5);
+    border-radius: var(--pill);
+    background: #fff;
+    border: 1px solid var(--c-line);
+  }
+
+  .convo__tab {
+    min-height: 2.75rem;
+    padding: 0 1.3rem;
+    border-radius: var(--pill);
+    font-weight: 700;
+    color: var(--c-ink-soft);
+    transition:
+      background-color var(--t-mid) var(--ease-out),
+      color var(--t-fast) ease;
+  }
+
+  .convo__tab:hover {
+    color: var(--c-ink);
+  }
+
+  .convo__tab[aria-selected='true'] {
+    background: var(--violet);
+    color: #fff;
+  }
+
+  .convo__panel {
+    display: grid;
+    gap: var(--s-6) var(--gap);
+  }
+
+  .convo__panel + .convo__panel {
+    margin-top: var(--s-8);
+  }
+
+  :global(.is-enhanced) > .convo__panel + .convo__panel {
+    margin-top: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .convo__panel {
+      grid-template-columns: 7fr 5fr;
+      align-items: start;
+    }
+
+    .convo__notes {
+      position: sticky;
+      top: calc(var(--header-h) + var(--s-6));
+    }
+  }
+
+  .chat {
+    padding: var(--s-5);
+    border-radius: 28px;
+    background: #efeae2;
+    color: #111b21;
+  }
+
+  .chat__business {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: var(--s-4);
+    padding: 0.35rem 0.8rem;
+    border-radius: var(--pill);
+    background: #075e54;
+    color: #fff;
+    font-size: var(--fs-small);
+    font-weight: 700;
+  }
+
+  .chat__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .msg {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+    max-width: 88%;
+  }
+
+  @media (min-width: 640px) {
+    .msg {
+      max-width: 76%;
+    }
+  }
+
+  .msg__bubble {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.98rem;
+    line-height: 1.45;
+    box-shadow: 0 1px 0.5px rgb(11 20 26 / 0.13); /* taste-skill-ignore: burbuja de chat */
+  }
+
+  .msg--cliente {
+    align-self: flex-start;
+  }
+
+  .msg--cliente .msg__bubble {
+    background: #fff;
+    border-top-left-radius: 3px;
+  }
+
+  .msg--asistente {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+  }
+
+  .msg--asistente .msg__bubble {
+    background: #d9fdd3;
+    border-top-right-radius: 3px;
+  }
+
+  .msg__file {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 8px;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    background: rgb(7 94 84 / 0.1);
+  }
+
+  .msg__file::before {
+    content: '';
+    width: 0.7rem;
+    height: 0.9rem;
+    border: 2px solid currentColor;
+    border-radius: 2px;
+  }
+
+  .msg__note,
+  .convo__n {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 50%;
+    background: var(--violet);
+    color: #fff;
+    font-size: var(--fs-small);
+    font-weight: 800;
+  }
+
+  .msg--handoff {
+    align-self: stretch;
+    max-width: none;
+    margin-top: var(--s-2);
+  }
+
+  .msg__handoff {
+    display: block;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 14px;
+    background: #fff3c4;
+    color: #5a4300;
+    font-size: var(--fs-small);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .convo__notes {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  .convo__notes li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-4);
+    align-items: start;
+    padding: 1.2rem 1.3rem;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid var(--c-line);
+    font-size: var(--fs-body);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+</style>

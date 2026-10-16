@@ -1,0 +1,110 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import PairsTable from '@/components/blocks/PairsTable.astro';
+import VideoBand from '@/components/blocks/VideoBand.astro';
+import Steps from '@/components/blocks/Steps.astro';
+import ListBlock from '@/components/blocks/ListBlock.astro';
+import FaqBlock from '@/components/blocks/FaqBlock.astro';
+import RelatedServices from '@/components/blocks/RelatedServices.astro';
+import ClosingCta from '@/components/blocks/ClosingCta.astro';
+import { iaFaqs } from '@/content/faqs';
+import StreamDemo from '@/components/demos/StreamDemo.astro';
+import { iaTasksExtended } from '@/content/demos';
+import { service, faqPage } from '@/lib/schema';
+
+const base = Astro.site ?? new URL(Astro.url.origin);
+const path = '/inteligencia-artificial/ia-para-tu-negocio/';
+const description =
+  'Proyectos de IA aplicados a procesos reales: asistentes internos que consultan documentos, flujos para preparar propuestas, atención con reglas de escalamiento y análisis con revisión humana.';
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Inteligencia Artificial', path: '/inteligencia-artificial/' },
+  { name: 'IA aplicada a tu negocio', path },
+];
+---
+
+<BaseLayout
+  title="IA aplicada a tu negocio: asistentes y flujos de trabajo"
+  description={description}
+  crumbs={crumbs}
+  active="ia"
+  schema={[service(base, { name: 'IA aplicada a tu negocio', description, path }), faqPage(iaFaqs)]}
+>
+  <PageHero
+    title="IA aplicada a tu negocio"
+    statement="De “seguro la IA podría ayudar” a un proyecto que realmente puedas usar."
+    text="Partimos de una tarea, un problema o una idea de negocio. Diseñamos el flujo, elegimos las herramientas y desarrollamos una solución con criterios claros de utilidad, control y adopción."
+    cta={{ label: 'Revisar mi idea', href: '/contacto/?tema=ia' }}
+    crumbs={crumbs}
+    family="ia"
+  >
+    <StreamDemo slot="aside" tasks={iaTasksExtended} tabs />
+  </PageHero>
+
+  <PairsTable
+    id="casos"
+    title="Casos de uso que se entienden rápido"
+    intro="Así suelen describir el problema las empresas. A la derecha, lo que se puede construir."
+    head={['Lo que pasa hoy', 'Qué podemos construir']}
+    quote
+    rows={[
+      [
+        'Mi equipo pierde tiempo buscando información.',
+        'Un asistente interno que consulta documentos, procedimientos o conocimiento autorizado.',
+      ],
+      [
+        'Cada propuesta comercial empieza desde cero.',
+        'Un flujo que organiza requerimientos, reutiliza información aprobada y ayuda a preparar borradores.',
+      ],
+      [
+        'Tenemos demasiadas preguntas repetitivas.',
+        'Un asistente de atención conectado a la información del negocio y con reglas para pasar a una persona.',
+      ],
+      [
+        'Quiero analizar información más rápido.',
+        'Flujos de análisis, clasificación, síntesis y reportes, con revisión humana.',
+      ],
+      [
+        'Tenemos una idea, pero no sabemos cómo aterrizarla.',
+        'Exploración, prototipo, pruebas y un plan de implementación.',
+      ],
+    ]}
+  />
+
+  <VideoBand clip="glorieta" text="De la idea a algo que tu equipo use todos los días." />
+
+  <Steps
+    id="proyecto"
+    title="Cómo trabajamos un proyecto"
+    steps={[
+      { title: 'Diagnóstico', text: 'Elegimos la tarea donde la IA puede ahorrar más tiempo o crear más valor.' },
+      { title: 'Diseño del flujo', text: 'Qué entra, qué hace la IA, qué revisa una persona y qué sale.' },
+      { title: 'Prototipo', text: 'Una primera versión que el equipo pueda usar pronto.' },
+      { title: 'Pruebas', text: 'Con casos del día a día, incluidos los difíciles.' },
+      { title: 'Adopción', text: 'Documentación y acompañamiento para que el equipo la use.' },
+    ]}
+  />
+
+  <ListBlock
+    id="criterio"
+    title="Nuestro criterio"
+    variant="large"
+    theme="surface"
+    items={[
+      'No automatizamos una tarea solo porque sea posible.',
+      'Definimos qué información puede usar la IA y cuál debe quedar fuera.',
+      'Diseñamos revisión humana donde el riesgo o la decisión lo requieren.',
+      'Probamos con casos reales, no solo con demos perfectas.',
+      'Documentamos cada solución para que no dependa de una sola persona.',
+    ]}
+  />
+
+  <FaqBlock faqs={iaFaqs} />
+  <RelatedServices slugs={['capacitacion', 'whatsapp-con-ia', 'desarrollos-a-medida', 'automatizacion-y-crm']} />
+  <ClosingCta
+    title="Cuéntanos qué tarea mejorar"
+    text="Con un ejemplo concreto de tu operación es suficiente para empezar."
+    cta={{ label: 'Tengo una idea', href: '/contacto/?tema=ia' }}
+  />
+</BaseLayout>

@@ -1,0 +1,130 @@
+---
+/**
+ * Proceso en verbos a escala de cartel: palabra grande a la izquierda,
+ * explicación breve a la derecha. Es una lista ordenada real.
+ */
+interface Step {
+  verb: string;
+  text: string;
+}
+interface Props {
+  id: string;
+  title: string;
+  intro?: string;
+  steps: Step[];
+  /** Frase final en serif. */
+  closing?: string;
+  theme?: 'ground' | 'surface';
+}
+const { id, title, intro, steps, closing, theme = 'ground' } = Astro.props;
+---
+
+<section class="process section" aria-labelledby={id} data-theme={theme === 'surface' ? 'surface' : undefined}>
+  <div class="wrap">
+    <div class="process__head grid" data-reveal>
+      <h2 id={id} class="t-head process__title">{title}</h2>
+      {intro && <p class="t-lead process__intro">{intro}</p>}
+    </div>
+
+    <ol class="process__list">
+      {
+        steps.map((s) => (
+          <li class="process__step" data-reveal>
+            <span class="process__verb">{s.verb}</span>
+            <span class="process__text">{s.text}</span>
+          </li>
+        ))
+      }
+    </ol>
+
+    {
+      closing && (
+        <p class="process__closing" data-reveal="self">
+          {closing}
+        </p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .process__head {
+    row-gap: var(--s-5);
+    margin-bottom: var(--s-8);
+  }
+
+  .process__title {
+    grid-column: 1 / -1;
+  }
+
+  .process__intro {
+    grid-column: 1 / -1;
+    max-width: 40ch;
+  }
+
+  @media (min-width: 1024px) {
+    .process__title {
+      grid-column: 1 / span 5;
+    }
+
+    .process__intro {
+      grid-column: 7 / -1;
+    }
+  }
+
+  .process__step {
+    display: grid;
+    gap: var(--s-2);
+    padding-block: var(--s-3);
+  }
+
+  .process__verb {
+    font-size: var(--fs-display);
+    font-weight: var(--fw-display);
+    letter-spacing: var(--tr-display);
+    line-height: 0.95;
+    transition: color var(--t-mid) ease;
+  }
+
+  .process__step:hover .process__verb {
+    color: var(--c-accent);
+  }
+
+  .process__text {
+    max-width: 38ch;
+    color: var(--c-ink);
+    font-size: var(--fs-body);
+    line-height: 1.45;
+  }
+
+  @media (min-width: 768px) {
+    .process__step {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gap);
+      align-items: baseline;
+    }
+
+    .process__verb {
+      grid-column: 1 / span 8;
+    }
+
+    .process__text {
+      grid-column: 9 / -1;
+    }
+  }
+
+  .process__closing {
+    margin-top: var(--s-9);
+    max-width: 30ch;
+    font-family: var(--font-serif);
+    font-size: var(--fs-lead);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  @media (min-width: 1024px) {
+    .process__closing {
+      margin-left: calc((100% + var(--gap)) / 12 * 6);
+    }
+  }
+</style>

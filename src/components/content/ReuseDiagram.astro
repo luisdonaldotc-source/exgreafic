@@ -1,0 +1,171 @@
+---
+/**
+ * Una pieza, muchos usos: cómo un contenido existente se convierte en varias
+ * piezas con objetivos distintos. Ejemplo ilustrativo.
+ */
+const outputs = [
+  { piece: 'Artículo para el sitio', goal: 'Responder una pregunta frecuente y aparecer en búsquedas.' },
+  { piece: 'Tres videos cortos', goal: 'Llevar una idea concreta a redes.' },
+  { piece: 'Carrusel con las ideas clave', goal: 'Explicar en un minuto lo que tomó una hora.' },
+  { piece: 'Correo para tus contactos', goal: 'Retomar la conversación con quien ya mostró interés.' },
+  { piece: 'Guía descargable', goal: 'Captar prospectos con algo útil.' },
+  { piece: 'Material para ventas', goal: 'Responder objeciones con ejemplos.' },
+];
+---
+
+<section class="reuse section" data-theme="surface" aria-labelledby="reutilizar-titulo">
+  <div class="wrap">
+    <div class="reuse__head">
+      <h2 id="reutilizar-titulo" class="t-head" data-split>Una pieza, muchos usos</h2>
+      <p class="t-lead reuse__intro">
+        Una sesión, un webinar, un artículo o una entrevista pueden convertirse en varias piezas con objetivos distintos,
+        sin repetir el mismo mensaje en todos los canales.
+      </p>
+    </div>
+
+    <div class="reuse__map">
+      <div class="reuse__source" data-theme="inverse" data-reveal="self">
+        <p class="reuse__source-name">Un webinar de 45 minutos</p>
+        <p class="reuse__source-kind">Un ejemplo de cómo se reparte</p>
+      </div>
+      <ol class="reuse__outputs" data-reveal>
+        {
+          outputs.map((o) => (
+            <li class="reuse__output">
+              <span class="reuse__piece">{o.piece}</span>
+              <span class="reuse__goal">{o.goal}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .reuse__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-8);
+  }
+
+  .reuse__intro {
+    max-width: 46ch;
+  }
+
+  @media (min-width: 1024px) {
+    .reuse__head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+
+  .reuse__map {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  .reuse__source {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--s-3);
+    padding: clamp(1.6rem, 3vw, 2.6rem);
+    min-height: 16rem;
+    border-radius: 32px;
+    background:
+      radial-gradient(70% 70% at 100% 0%, rgb(245 196 81 / 0.3), transparent 70%),
+      linear-gradient(150deg, var(--violet), var(--violet-700));
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .reuse__source::after {
+    content: '';
+    position: absolute;
+    top: 1.6rem;
+    right: 1.6rem;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.18) no-repeat center / 1.1rem
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M5 3l8 5-8 5z' fill='white'/%3E%3C/svg%3E");
+  }
+
+  .reuse__source-kind {
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  .reuse__source-name {
+    font-size: var(--fs-head);
+    font-weight: 700;
+    letter-spacing: var(--tr-head);
+    line-height: 1;
+    max-width: 14ch;
+  }
+
+  .reuse__outputs {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .reuse__outputs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .reuse__output {
+    display: grid;
+    gap: 0.3rem;
+    align-content: start;
+    padding: 1.2rem 1.3rem;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid var(--c-line);
+    transition:
+      transform var(--t-mid) var(--ease-spring),
+      border-color var(--t-mid) ease;
+  }
+
+  .reuse__output:hover {
+    transform: translateY(-5px) rotate(-0.6deg);
+    border-color: var(--violet-300);
+  }
+
+  .reuse__piece {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: -0.015em;
+  }
+
+  .reuse__piece::before {
+    content: '';
+    display: inline-block;
+    width: 0.55rem;
+    height: 0.55rem;
+    margin-right: 0.55rem;
+    border-radius: 50%;
+    background: var(--gold);
+    vertical-align: 0.1em;
+  }
+
+  .reuse__goal {
+    color: var(--c-ink-soft);
+    line-height: 1.45;
+  }
+
+  @media (min-width: 900px) {
+    .reuse__map {
+      grid-template-columns: 5fr 7fr;
+      align-items: stretch;
+    }
+
+    .reuse__source {
+      min-height: 100%;
+    }
+  }
+</style>

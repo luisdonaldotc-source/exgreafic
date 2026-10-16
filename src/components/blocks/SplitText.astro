@@ -1,0 +1,91 @@
+---
+/**
+ * Título a la izquierda; a la derecha una frase grande que se ilumina con el
+ * scroll y el resto del argumento.
+ */
+interface Props {
+  id: string;
+  title: string;
+  paragraphs: string[];
+  theme?: 'ground' | 'surface' | 'inverse' | 'dark';
+  /** Primera frase destacada a tamaño de apertura. */
+  emphasis?: boolean;
+}
+const { id, title, paragraphs, theme = 'ground', emphasis = false } = Astro.props;
+---
+
+<section class="split section" aria-labelledby={id} data-theme={theme === 'ground' ? undefined : theme}>
+  <div class="wrap split__grid">
+    <h2 id={id} class="split__title" data-split>{title}</h2>
+    <div class="split__body">
+      {
+        paragraphs.map((p, i) =>
+          emphasis && i === 0 ? (
+            <p class="split__lead" data-scrub>
+              {p}
+            </p>
+          ) : (
+            <p class="split__p">{p}</p>
+          ),
+        )
+      }
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .split__grid {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  .split__title {
+    max-width: 14ch;
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--c-highlight);
+  }
+
+  .split__body {
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .split__lead {
+    max-width: 24ch;
+    font-size: clamp(1.9rem, 1.2rem + 2.9vw, 3.9rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.04;
+  }
+
+  .split__p {
+    max-width: 52ch;
+    font-size: var(--fs-lead);
+    line-height: 1.5;
+    color: var(--c-ink-soft);
+  }
+
+  .split__body:not(:has(.split__lead)) .split__p:first-child {
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    color: var(--c-ink);
+    max-width: 30ch;
+  }
+
+  @media (min-width: 1024px) {
+    .split__grid {
+      grid-template-columns: 4fr 8fr;
+      column-gap: var(--gap);
+    }
+
+    .split__title {
+      padding-top: 0.9rem;
+    }
+  }
+</style>

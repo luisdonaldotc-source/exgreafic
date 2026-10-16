@@ -1,0 +1,16 @@
+---
+import Arrow from './Arrow.astro';
+
+interface Props {
+  href: string;
+  dir?: 'right' | 'down' | 'up-right';
+  class?: string;
+  [key: string]: unknown;
+}
+const { href, dir = 'right', class: className, ...rest } = Astro.props;
+---
+
+<a href={href} class:list={['link-action', className]} {...rest}>
+  <span><slot /></span>
+  <span class="btn__arrow"><Arrow dir={dir} /></span>
+</a>

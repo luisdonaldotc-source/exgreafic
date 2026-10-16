@@ -1,0 +1,114 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import SplitText from '@/components/blocks/SplitText.astro';
+import Steps from '@/components/blocks/Steps.astro';
+import FormatRows from '@/components/blocks/FormatRows.astro';
+import ReuseDiagram from '@/components/content/ReuseDiagram.astro';
+import Note from '@/components/blocks/Note.astro';
+import ClosingCta from '@/components/blocks/ClosingCta.astro';
+import { service } from '@/lib/schema';
+
+const base = Astro.site ?? new URL(Astro.url.origin);
+const path = '/estrategia-y-contenido/';
+const description =
+  'Estrategia digital, estrategia y creación de contenido, gestión de redes sociales y Social Selling para que tu marca explique mejor lo que hace y genere conversaciones.';
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Estrategia y Contenido', path },
+];
+---
+
+<BaseLayout
+  title="Estrategia digital, contenido y redes sociales"
+  description={description}
+  crumbs={crumbs}
+  active="contenido"
+  schema={[service(base, { name: 'Estrategia digital y contenido', description, path })]}
+>
+  <PageHero
+    title="Estrategia y contenido"
+    statement="Contenido que tenga una razón para existir."
+    text="Planeamos, creamos y gestionamos contenido para que tu marca explique mejor lo que hace, mantenga presencia, apoye campañas y genere conversaciones. No publicamos por llenar un calendario."
+    cta={{ label: 'Revisar mi estrategia de contenido', href: '/contacto/?tema=contenido' }}
+    crumbs={crumbs}
+    family="contenido"
+  />
+
+  <div id="estrategia-digital">
+    <SplitText
+      id="estrategia-digital-titulo"
+      title="Estrategia digital"
+      emphasis
+      paragraphs={[
+        'Antes de publicar, pautar o automatizar, podemos definir el plan.',
+        'Así cada acción tiene un porqué y no se convierte en una colección de tácticas aisladas.',
+      ]}
+    />
+  </div>
+
+  <Steps
+    id="el-plan"
+    title="Lo que define el plan"
+    theme="inverse"
+    steps={[
+      { title: 'Objetivo y audiencia', text: 'Qué queremos lograr y con quién.' },
+      { title: 'Propuesta de valor', text: 'Por qué alguien debería elegirte, en sus palabras.' },
+      { title: 'Recorrido y canales', text: 'Dónde te descubren, comparan y deciden.' },
+      { title: 'Contenidos', text: 'Qué decir en cada momento del recorrido.' },
+      { title: 'Seguimiento y medición', text: 'Qué pasa después y cómo sabremos si funciona.' },
+    ]}
+  />
+
+  <FormatRows
+    id="cinco-formas"
+    title="Cinco formas de trabajar esta área"
+    rows={[
+      {
+        title: 'Estrategia digital',
+        text: 'Objetivos, audiencias, mensajes, canales, recorrido, prioridades y medición antes de ejecutar.',
+      },
+      {
+        title: 'Estrategia de contenido',
+        text: 'Temas, audiencias, formatos y objetivos para que cada pieza tenga una función.',
+        list: ['Pilares y narrativa', 'Calendario', 'Canales y formatos', 'Criterios de medición'],
+        href: '/estrategia-y-contenido/estrategia-y-creacion-de-contenido/',
+        linkLabel: 'Ver estrategia y creación de contenido',
+      },
+      {
+        title: 'Creación de contenido',
+        text: 'Las piezas que necesita la estrategia: textos, diseño, carruseles, video corto, artículos, guías y materiales.',
+        href: '/estrategia-y-contenido/estrategia-y-creacion-de-contenido/',
+        linkLabel: 'Ver qué podemos producir',
+      },
+      {
+        title: 'Gestión de redes',
+        text: 'Operación continua de la presencia orgánica: planeación, publicación, coordinación, monitoreo y aprendizaje.',
+        href: '/estrategia-y-contenido/gestion-de-redes-sociales/',
+        linkLabel: 'Ver gestión de redes',
+      },
+      {
+        title: 'Social Selling',
+        text: 'Perfiles comerciales y de expertos que generan presencia y conversaciones de negocio.',
+        list: ['Optimización de perfil', 'Contenido desde expertos', 'Prospección y listas', 'Mensajes y seguimiento'],
+        href: '/estrategia-y-contenido/social-selling/',
+        linkLabel: 'Ver Social Selling',
+      },
+    ]}
+  />
+
+  <ReuseDiagram />
+
+  <Note
+    id="ia-control-humano"
+    title="IA con control humano"
+    text="Usamos IA para investigar y acelerar borradores. El criterio y la revisión final son humanos."
+    tone="accent"
+  />
+
+  <ClosingCta
+    title="Revisemos tu contenido"
+    text="Empezamos por lo que necesitas vender y por las preguntas que tus clientes ya te hacen."
+    cta={{ label: 'Revisar mi estrategia de contenido', href: '/contacto/?tema=contenido' }}
+  />
+</BaseLayout>

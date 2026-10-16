@@ -1,0 +1,70 @@
+---
+/**
+ * Banda de video a todo el ancho que crece al entrar en pantalla, con una frase encima.
+ * Videos de Mixkit (licencia libre para uso comercial), comprimidos en public/video.
+ */
+type Clip = 'ciudad' | 'atardecer' | 'glorieta';
+interface Props {
+  clip: Clip;
+  text: string;
+}
+const { clip, text } = Astro.props;
+const src = clip === 'glorieta' ? '/video/glorieta-1280.mp4' : `/video/${clip}-1600.mp4`;
+const mobileSrc = clip === 'glorieta' ? '/video/glorieta-1280.mp4' : `/video/${clip}-960.mp4`;
+---
+
+<div class="vb">
+  <div class="vb__frame" data-scale-in>
+    <video class="vb__video" muted loop playsinline preload="none" poster={`/video/${clip}-poster.jpg`} data-autoplay aria-hidden="true">
+      <source src={mobileSrc} type="video/mp4" media="(max-width: 767px)" />
+      <source src={src} type="video/mp4" />
+    </video>
+    <div class="vb__shade" aria-hidden="true"></div>
+    <p class="vb__text" data-split>{text}</p>
+  </div>
+</div>
+
+<style>
+  .vb {
+    padding-inline: var(--margin);
+  }
+
+  .vb__frame {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: clamp(22rem, 62vh, 40rem);
+    padding: clamp(1.5rem, 4vw, 3.5rem);
+    border-radius: 32px;
+    overflow: hidden;
+    isolation: isolate;
+    color: #fff;
+    background: var(--night);
+  }
+
+  .vb__video {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .vb__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(0deg, rgb(11 9 18 / 0.85) 0%, rgb(11 9 18 / 0.1) 60%),
+      linear-gradient(100deg, rgb(91 33 182 / 0.55), transparent 70%);
+  }
+
+  .vb__text {
+    max-width: 20ch;
+    font-size: clamp(2rem, 1.2rem + 3.4vw, 4.6rem);
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+</style>

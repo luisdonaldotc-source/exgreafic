@@ -1,0 +1,201 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import Steps from '@/components/blocks/Steps.astro';
+import ListBlock from '@/components/blocks/ListBlock.astro';
+import VideoBand from '@/components/blocks/VideoBand.astro';
+import ClosingCta from '@/components/blocks/ClosingCta.astro';
+import { cases } from '@/content/cases';
+import { getService } from '@/content/services';
+
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Nosotros', path: '/nosotros/' },
+];
+
+const principles = [
+  'Empezamos por el problema, no por la herramienta.',
+  'Explicamos en lenguaje claro lo que estamos haciendo y por qué.',
+  'Podemos construir una pieza puntual o conectar varias cuando existe una razón.',
+  'Medimos lo que sucede después del clic.',
+  'No vendemos IA como magia. La tratamos como una capacidad que necesita contexto, reglas y prueba.',
+  'Preferimos una solución simple que funcione a una arquitectura complicada que nadie use.',
+];
+---
+
+<BaseLayout
+  title="Nosotros: marketing, automatización e IA con criterio"
+  description="Trabajamos entre marketing, automatización e inteligencia artificial para resolver problemas concretos de crecimiento, atención y productividad."
+  crumbs={crumbs}
+  active="nosotros"
+>
+  <PageHero
+    title="Nosotros"
+    statement="Tecnología cuando aporta, estrategia cuando hace falta y ejecución hasta que funcione."
+    text="Trabajamos entre marketing, automatización e inteligencia artificial para resolver problemas concretos de crecimiento, atención y productividad."
+    cta={{ label: 'Hablemos de tu proyecto', href: '/contacto/' }}
+    crumbs={crumbs}
+  />
+
+  <section class="principles section" aria-labelledby="forma-de-pensar">
+    <div class="wrap grid principles__grid">
+      <h2 id="forma-de-pensar" class="t-head principles__title">Cómo pensamos</h2>
+      <ol class="principles__list">
+        {
+          principles.map((p) => (
+            <li class="principles__item" data-reveal="self">
+              {p}
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <VideoBand clip="atardecer" text="Empezamos por el problema. La herramienta viene después." />
+
+  <Steps
+    id="como-trabajamos"
+    title="Cómo trabajamos"
+    theme="inverse"
+    steps={[
+      { title: 'Entendemos', text: 'Tu objetivo, tu audiencia, tu proceso actual y dónde se pierde tiempo u oportunidad.' },
+      { title: 'Priorizamos', text: 'Lo que puede tener más impacto sin agregar complejidad innecesaria.' },
+      { title: 'Construimos', text: 'Campañas, contenido, páginas, automatizaciones, asistentes o integraciones.' },
+      { title: 'Medimos', text: 'Lo que sucede, para decidir qué optimizar, escalar o cambiar.' },
+    ]}
+  />
+
+  <ListBlock
+    id="lo-que-evitamos"
+    title="Lo que no vas a encontrar aquí"
+    intro="Algunas cosas que decidimos no hacer, aunque sean comunes en el medio."
+    items={[
+      'Promesas absolutas sobre IA, SEO o publicidad.',
+      'Paquetes “360°” que no se ajustan a tu problema.',
+      'Listas de herramientas sin explicar para qué sirven.',
+      'Precios publicados antes de entender tu caso.',
+      'Jerga de agencia que tienes que traducir.',
+      'Automatizar algo solo porque se puede.',
+    ]}
+  />
+
+  {
+    cases.length > 0 && (
+      <section class="cases-list section" data-theme="surface" aria-labelledby="casos">
+        <div class="wrap">
+          <h2 id="casos" class="t-head">Casos</h2>
+          {cases.map((c) => (
+            <article class="case">
+              <h3 class="case__client">{c.client}</h3>
+              <dl class="case__body">
+                <dt>Problema</dt>
+                <dd>{c.problem}</dd>
+                <dt>Solución</dt>
+                <dd>{c.solution}</dd>
+                <dt>Resultado</dt>
+                <dd>{c.result}</dd>
+              </dl>
+              <p class="case__services">{c.services.map((s) => getService(s).name).join(' · ')}</p>
+              {c.quote && (
+                <blockquote class="case__quote">
+                  <p>{c.quote.text}</p>
+                  <footer>
+                    {c.quote.author}
+                    {c.quote.role && `, ${c.quote.role}`}
+                  </footer>
+                </blockquote>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <ClosingCta
+    title="Hablemos de tu proyecto"
+    text="Puedes llegar con un problema, un objetivo o una idea. Empezamos por entenderlo."
+  />
+</BaseLayout>
+
+<style>
+  .principles__grid {
+    row-gap: var(--s-7);
+  }
+
+  .principles__title {
+    grid-column: 1 / -1;
+    max-width: 12ch;
+  }
+
+  .principles__list {
+    grid-column: 1 / -1;
+  }
+
+  .principles__item {
+    padding-block: var(--s-5);
+    border-top: 2px solid var(--c-ink);
+    font-family: var(--font-serif);
+    font-size: var(--fs-statement);
+    line-height: 1.22;
+    letter-spacing: -0.01em;
+    max-width: 34ch;
+  }
+
+  .principles__item:last-child {
+    border-bottom: 2px solid var(--c-ink);
+  }
+
+  @media (min-width: 1024px) {
+    .principles__title {
+      grid-column: 1 / span 4;
+      position: sticky;
+      top: calc(var(--header-h) + var(--s-6));
+      align-self: start;
+    }
+
+    .principles__list {
+      grid-column: 6 / -1;
+    }
+
+    .principles__item {
+      max-width: none;
+    }
+  }
+
+  .case {
+    display: grid;
+    gap: var(--s-4);
+    padding-block: var(--s-7);
+    border-top: 2px solid var(--c-ink);
+  }
+
+  .case__client {
+    font-size: var(--fs-lead);
+  }
+
+  .case__body {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: var(--s-2) var(--s-5);
+  }
+
+  .case__body dt {
+    font-weight: var(--fw-strong);
+  }
+
+  .case__body dd {
+    font-family: var(--font-serif);
+    max-width: 60ch;
+  }
+
+  .case__services {
+    color: var(--c-ink-soft);
+  }
+
+  .case__quote p {
+    font-family: var(--font-serif);
+    font-size: var(--fs-lead);
+  }
+</style>

@@ -1,0 +1,166 @@
+---
+/**
+ * Cifras con contexto, contador animado y fuente visible.
+ */
+import Cite from '@/components/ui/Cite.astro';
+import SourceList from '@/components/ui/SourceList.astro';
+import type { SourceId } from '@/content/sources';
+
+interface Fact {
+  figure: string;
+  unit?: string;
+  text: string;
+  source: SourceId;
+}
+interface Props {
+  id: string;
+  title: string;
+  facts: Fact[];
+  conclusion?: string;
+  theme?: 'accent' | 'surface' | 'ground' | 'dark';
+}
+const { id, title, facts, conclusion, theme = 'dark' } = Astro.props;
+const ids = [...new Set(facts.map((f) => f.source))];
+
+// "+117.4%" → prefijo "+", número 117.4 (1 decimal), sufijo "%"
+const parse = (figure: string) => {
+  const m = figure.match(/^([+]?)(\d+(?:\.\d+)?)(%?)$/);
+  if (!m) return null;
+  const decimals = m[2].includes('.') ? m[2].split('.')[1].length : 0;
+  return { prefix: m[1], value: m[2], suffix: m[3], decimals };
+};
+---
+
+<section class="stat section" aria-labelledby={id} data-theme={theme === 'ground' ? undefined : theme}>
+  <div class="wrap">
+    <h2 id={id} class="t-head stat__title" data-split>{title}</h2>
+    <dl class="stat__facts" data-cols={facts.length} data-reveal>
+      {
+        facts.map((f) => {
+          const n = parse(f.figure);
+          return (
+            <div class="stat__fact">
+              <dt class="stat__figure">
+                {n ? (
+                  <span data-count={n.value} data-decimals={n.decimals} data-prefix={n.prefix} data-suffix={n.suffix}>
+                    {f.figure}
+                  </span>
+                ) : (
+                  <span>{f.figure}</span>
+                )}
+                {f.unit && <span class="stat__unit">{f.unit}</span>}
+              </dt>
+              <dd class="stat__text">
+                {f.text}
+                <Cite n={ids.indexOf(f.source) + 1} scope={id} />
+              </dd>
+            </div>
+          );
+        })
+      }
+    </dl>
+    <div class="stat__foot">
+      {conclusion && <p class="stat__conclusion">{conclusion}</p>}
+      <div class="stat__sources">
+        <SourceList ids={ids} scope={id} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stat__title {
+    max-width: 18ch;
+    margin-bottom: var(--s-7);
+  }
+
+  .stat__facts {
+    display: grid;
+    gap: var(--gap);
+  }
+
+  @media (min-width: 900px) {
+    .stat__facts[data-cols='2'] {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat__facts[data-cols='3'] {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .stat__fact {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+    padding: clamp(1.4rem, 3vw, 2.6rem);
+    border-radius: 28px;
+    background: color-mix(in srgb, var(--c-ink) 6%, transparent);
+    border: 1px solid var(--c-line);
+  }
+
+  .stat__figure {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.2em 0.3em;
+    font-size: clamp(3.4rem, 2rem + 5vw, 7rem);
+    font-weight: 800;
+    letter-spacing: -0.055em;
+    line-height: 0.9;
+    font-variant-numeric: lining-nums proportional-nums;
+  }
+
+  .stat__unit {
+    font-size: 0.3em;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--c-highlight);
+  }
+
+  :global([data-theme='accent']) .stat__text {
+    color: #fff;
+  }
+
+  :global([data-theme='accent']) .stat__unit {
+    color: #fff;
+    max-width: 12ch;
+  }
+
+  .stat__text {
+    max-width: 36ch;
+    font-size: var(--fs-lead);
+    line-height: 1.45;
+    color: var(--c-ink-soft);
+  }
+
+  .stat__foot {
+    display: grid;
+    gap: var(--s-6);
+    margin-top: var(--s-8);
+  }
+
+  .stat__conclusion {
+    max-width: 30ch;
+    font-size: clamp(1.4rem, 1.05rem + 1.4vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+  }
+
+  .stat__sources :global(a) {
+    color: inherit;
+  }
+
+  .stat__sources :global(.sources) {
+    color: var(--c-ink-soft);
+  }
+
+  @media (min-width: 1024px) {
+    .stat__foot {
+      grid-template-columns: 7fr 5fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+</style>

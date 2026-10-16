@@ -1,0 +1,196 @@
+---
+/**
+ * Lista con título. Variantes:
+ * - columns: tarjetas con marca de verificación en dos o tres columnas (por defecto).
+ * - large: tarjetas grandes con número, en dos columnas.
+ * Un elemento puede ser texto o { title, text }.
+ */
+export type ListItem = string | { title: string; text?: string };
+interface Props {
+  id: string;
+  title: string;
+  intro?: string;
+  items: ListItem[];
+  variant?: 'columns' | 'large';
+  columns?: 2 | 3;
+  theme?: 'ground' | 'surface' | 'dark';
+}
+const { id, title, intro, items, variant = 'columns', columns = 2, theme = 'ground' } = Astro.props;
+---
+
+<section
+  class:list={['list section', `list--${variant}`]}
+  aria-labelledby={id}
+  data-theme={theme === 'ground' ? undefined : theme}
+>
+  <div class="wrap">
+    <div class="list__head">
+      <h2 id={id} class="t-head list__title" data-split>{title}</h2>
+      {intro && <p class="t-lead list__intro">{intro}</p>}
+    </div>
+    <ul class="list__items" data-cols={columns} data-reveal>
+      {
+        items.map((item, i) => (
+          <li class="list__item" data-spotlight>
+            {variant === 'large' ? (
+              <span class="list__num" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+            ) : (
+              <span class="list__check" aria-hidden="true" />
+            )}
+            {typeof item === 'string' ? (
+              <span class="list__text">{item}</span>
+            ) : (
+              <span class="list__text">
+                <span class="list__item-title">{item.title}</span>
+                {item.text && <span class="list__item-text">{item.text}</span>}
+              </span>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .list__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-7);
+  }
+
+  .list__title {
+    max-width: 18ch;
+  }
+
+  .list__intro {
+    max-width: 44ch;
+  }
+
+  @media (min-width: 1024px) {
+    .list__head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+
+  .list__items {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.85rem;
+  }
+
+  @media (min-width: 768px) {
+    .list__items {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .list__items[data-cols='3'] {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .list__item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    padding: 1.05rem 1.2rem;
+    border-radius: 18px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    line-height: 1.45;
+    font-weight: 500;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      transform var(--t-mid) var(--ease-out),
+      border-color var(--t-mid) ease;
+  }
+
+  .list__item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--c-accent) 14%, transparent), transparent 70%);
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+
+  .list__item:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--c-accent) 45%, transparent);
+  }
+
+  .list__item:hover::before {
+    opacity: 1;
+  }
+
+  .list__check {
+    position: relative;
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 0.05rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--c-accent) 14%, transparent);
+  }
+
+  .list__check::after {
+    content: '';
+    position: absolute;
+    left: 0.52rem;
+    top: 0.33rem;
+    width: 0.38rem;
+    height: 0.62rem;
+    border-right: 2px solid var(--c-accent);
+    border-bottom: 2px solid var(--c-accent);
+    transform: rotate(40deg);
+  }
+
+  .list__text {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .list__item-title {
+    font-weight: 700;
+  }
+
+  .list__item-text {
+    color: var(--c-ink-soft);
+    font-weight: 450;
+  }
+
+  /* Variante grande */
+  .list--large .list__item {
+    flex-direction: column;
+    gap: var(--s-5);
+    min-height: 10rem;
+    padding: 1.5rem 1.6rem;
+    border-radius: 24px;
+    justify-content: space-between;
+  }
+
+  .list--large .list__text {
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    max-width: 26ch;
+  }
+
+  .list__num {
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--tr-label);
+    color: var(--c-accent);
+  }
+</style>

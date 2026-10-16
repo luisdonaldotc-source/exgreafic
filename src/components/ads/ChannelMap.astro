@@ -1,0 +1,305 @@
+---
+/**
+ * Mapa de canales por momento de decisión. Es una tabla real: cada celda dice
+ * en texto si el canal es fuerte, complementa o no aplica (el cuadro es solo visual).
+ * Es una orientación general basada en el blueprint ("Mejor cuando…"); cada caso se revisa.
+ */
+import { getService } from '@/content/services';
+
+type Level = 2 | 1 | 0;
+const moments = ['Descubrir', 'Explorar y comparar', 'Buscar y decidir', 'Volver'];
+const label: Record<Level, string> = { 2: 'Fuerte', 1: 'Complementa', 0: 'No es su papel principal' };
+
+const channels: { slug: string; when: string; levels: Level[] }[] = [
+  {
+    slug: 'chatgpt-ads',
+    when: 'La persona está explorando, comparando o buscando orientación dentro de una conversación.',
+    levels: [1, 2, 1, 0],
+  },
+  {
+    slug: 'google-ads',
+    when: 'Ya existe una búsqueda explícita por un producto, servicio o solución.',
+    levels: [0, 1, 2, 1],
+  },
+  {
+    slug: 'meta-ads',
+    when: 'Necesitas generar descubrimiento, demanda, mensajes, prospectos o remarketing.',
+    levels: [2, 1, 0, 2],
+  },
+  {
+    slug: 'linkedin-ads',
+    when: 'Tu audiencia se define por empresa, cargo, función, sector o nivel de responsabilidad.',
+    levels: [2, 2, 0, 1],
+  },
+  {
+    slug: 'tiktok-y-youtube-ads',
+    when: 'El video puede explicar, demostrar o generar demanda de forma eficiente.',
+    levels: [2, 1, 0, 1],
+  },
+];
+---
+
+<section class="cmap section" aria-labelledby="canales-titulo">
+  <div class="wrap">
+    <div class="cmap__head">
+      <h2 id="canales-titulo" class="t-head" data-split>Cada canal, un momento distinto</h2>
+      <p class="t-lead cmap__intro">
+        Estar en todas partes cuesta mucho y rara vez funciona. Elegimos según la intención de tu cliente y el tipo de
+        decisión que está tomando.
+      </p>
+    </div>
+
+    <div class="cmap__scroll" data-reveal="self">
+      <table class="cmap__table">
+        <caption class="visually-hidden">Canales de publicidad y el momento de decisión donde suelen funcionar mejor</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="cmap__col-channel">Canal</th>
+            <th scope="col" class="cmap__col-when">Mejor cuando…</th>
+            {
+              moments.map((m) => (
+                <th scope="col" class="cmap__col-moment">
+                  {m}
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {
+            channels.map((c) => {
+              const s = getService(c.slug);
+              return (
+                <tr>
+                  <th scope="row" class="cmap__channel">
+                    <a href={s.path}>{s.name}</a>
+                  </th>
+                  <td class="cmap__when">{c.when}</td>
+                  {c.levels.map((lv, i) => (
+                    <td class="cmap__cell" data-level={lv} data-moment={moments[i]}>
+                      <span class="cmap__mark" aria-hidden="true" />
+                      <span class="cmap__label">{label[lv]}</span>
+                    </td>
+                  ))}
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="cmap__legend t-small">
+      <span><span class="cmap__mark" data-level="2"></span> Suele ser fuerte</span>
+      <span><span class="cmap__mark" data-level="1"></span> Complementa</span>
+      <span>Orientación general: cada negocio se revisa con sus datos.</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .cmap__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-7);
+  }
+
+  .cmap__intro {
+    max-width: 44ch;
+  }
+
+  @media (min-width: 1024px) {
+    .cmap__head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+
+  .cmap__scroll {
+    padding: clamp(1rem, 2.4vw, 2rem);
+    border-radius: 28px;
+    background: #fff;
+    border: 1px solid var(--c-line);
+  }
+
+  .cmap__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .cmap__table thead th {
+    padding: 0 var(--s-3) var(--s-4) 0;
+    text-align: left;
+    vertical-align: bottom;
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--c-ink-soft);
+  }
+
+  .cmap__table tbody tr {
+    transition: background-color var(--t-fast) ease;
+  }
+
+  .cmap__table tbody tr:hover {
+    background: var(--violet-50);
+  }
+
+  .cmap__table tbody th,
+  .cmap__table tbody td {
+    padding: var(--s-4) var(--s-3) var(--s-4) 0;
+    vertical-align: middle;
+    text-align: left;
+    border-top: 1px solid var(--c-line);
+  }
+
+  .cmap__table tbody th {
+    padding-left: var(--s-3);
+  }
+
+  .cmap__channel a {
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--t-fast) ease;
+  }
+
+  .cmap__channel a:hover {
+    color: var(--violet);
+  }
+
+  .cmap__when {
+    max-width: 36ch;
+    color: var(--c-ink-soft);
+    line-height: 1.45;
+  }
+
+  .cmap__col-moment,
+  .cmap__cell {
+    width: 10%;
+  }
+
+  .cmap__mark {
+    display: inline-block;
+    width: 100%;
+    max-width: 6.5rem;
+    height: 0.9rem;
+    border-radius: var(--pill);
+    background: transparent;
+    vertical-align: middle;
+  }
+
+  .cmap__mark[data-level='2'],
+  .cmap__cell[data-level='2'] .cmap__mark {
+    background: linear-gradient(90deg, var(--violet), var(--violet-300));
+    box-shadow: 0 6px 16px -8px var(--violet);
+  }
+
+  .cmap__mark[data-level='1'],
+  .cmap__cell[data-level='1'] .cmap__mark {
+    background: color-mix(in srgb, var(--violet) 28%, #fff);
+  }
+
+  .cmap__cell[data-level='0'] .cmap__mark {
+    background: var(--paper-2);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cmap__mark {
+      transform-origin: left center;
+      transition: transform 900ms var(--ease-out);
+    }
+
+    :global(html.js:not(.no-reveal)) [data-reveal='self']:not(.is-in) .cmap__mark {
+      transform: scaleX(0);
+    }
+  }
+
+  .cmap__label {
+    position: absolute;
+    width: 1px;
+    height: 1px; /* taste-skill-ignore: texto solo para lectores de pantalla */
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .cmap__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-6);
+    margin-top: var(--s-5);
+    font-size: var(--fs-small);
+    color: var(--c-ink-soft);
+  }
+
+  .cmap__legend > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .cmap__legend .cmap__mark {
+    width: 1.6rem;
+    height: 0.7rem;
+  }
+
+  @media (max-width: 899px) {
+    .cmap__table thead {
+      position: absolute;
+      width: 1px;
+      height: 1px; /* taste-skill-ignore: encabezado solo para lectores de pantalla */
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .cmap__table tbody tr {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--s-2);
+      padding: var(--s-5) 0;
+      border-top: 1px solid var(--c-line);
+    }
+
+    .cmap__table tbody tr:first-child {
+      border-top: 0;
+    }
+
+    .cmap__table tbody th,
+    .cmap__table tbody td {
+      padding: 0;
+      border: 0;
+    }
+
+    .cmap__channel,
+    .cmap__when {
+      grid-column: 1 / -1;
+    }
+
+    .cmap__when {
+      margin-bottom: var(--s-3);
+    }
+
+    .cmap__cell {
+      width: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .cmap__cell::before {
+      content: attr(data-moment);
+      font-size: 0.8125rem;
+      line-height: 1.2;
+      color: var(--c-ink-soft);
+      min-height: 2.4em;
+    }
+
+    .cmap__mark {
+      max-width: none;
+    }
+  }
+</style>

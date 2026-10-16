@@ -1,0 +1,117 @@
+---
+/**
+ * Nota de criterio: "Antes de invertir", "Transparencia", "Criterio".
+ * Tarjeta con borde degradado y luz de marca.
+ */
+interface Props {
+  title: string;
+  text: string;
+  detail?: string;
+  tone?: 'accent' | 'inverse' | 'surface';
+  id?: string;
+}
+const { title, text, detail, tone = 'inverse', id } = Astro.props;
+---
+
+<section class="note-wrap" aria-labelledby={id}>
+  <div class="wrap">
+    <div class:list={['note', `note--${tone}`]} data-reveal>
+      <h2 class="note__title" id={id}>{title}</h2>
+      <p class="note__text">{text}</p>
+      {detail && <p class="note__detail">{detail}</p>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .note-wrap {
+    padding-block: calc(var(--section) * 0.45);
+  }
+
+  .note {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+    padding: clamp(1.6rem, 4vw, 3.5rem);
+    border-radius: 32px;
+    color: #fff;
+    background:
+      radial-gradient(60% 80% at 100% 0%, rgb(124 58 237 / 0.55), transparent 65%),
+      radial-gradient(40% 60% at 0% 100%, rgb(245 196 81 / 0.18), transparent 70%),
+      var(--night);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Borde degradado. */
+  .note::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(120deg, rgb(167 139 250 / 0.7), rgb(255 255 255 / 0.05) 40%, rgb(245 196 81 / 0.6));
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .note--accent {
+    background:
+      radial-gradient(60% 80% at 100% 0%, rgb(245 196 81 / 0.35), transparent 65%),
+      linear-gradient(135deg, var(--violet), var(--violet-700));
+  }
+
+  .note--surface {
+    color: var(--c-ink);
+    background:
+      radial-gradient(60% 80% at 100% 0%, rgb(124 58 237 / 0.14), transparent 65%),
+      #fff;
+  }
+
+  .note__title {
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .note--surface .note__title {
+    color: var(--violet);
+  }
+
+  .note__text {
+    max-width: 30ch;
+    font-size: clamp(1.6rem, 1.1rem + 2vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+  }
+
+  .note__detail {
+    max-width: 52ch;
+    font-size: var(--fs-lead);
+    line-height: 1.45;
+    opacity: 0.82;
+  }
+
+  @media (min-width: 900px) {
+    .note {
+      grid-template-columns: 3fr 9fr;
+      column-gap: var(--gap);
+    }
+
+    .note__title {
+      padding-top: 0.8rem;
+    }
+
+    .note__text,
+    .note__detail {
+      grid-column: 2;
+    }
+  }
+</style>

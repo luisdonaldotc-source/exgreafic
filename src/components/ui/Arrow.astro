@@ -1,0 +1,40 @@
+---
+/** Flecha dibujada (la subfamilia latina de las fuentes no incluye "→"). */
+interface Props {
+  dir?: 'right' | 'down' | 'up-right';
+  class?: string;
+}
+const { dir = 'right', class: className } = Astro.props;
+---
+
+<svg
+  class:list={['arrow', `arrow--${dir}`, className]}
+  width="1em"
+  height="1em"
+  viewBox="0 0 16 16"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.7"
+  stroke-linecap="square"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d="M2 8h11.2M8.6 3.4 13.2 8l-4.6 4.6"></path>
+</svg>
+
+<style>
+  .arrow {
+    flex: none;
+    width: 0.95em;
+    height: 0.95em;
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .arrow--down {
+    rotate: 90deg;
+  }
+
+  .arrow--up-right {
+    rotate: -45deg;
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+/**
+ * Aviso de privacidad (plantilla). Los datos del responsable salen de site.legal.
+ * Lo marcado como pendiente debe completarse y revisarse con asesoría legal antes de publicar.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Prose from '@/components/blocks/Prose.astro';
+import { site } from '@/config/site';
+
+const legal = site.legal;
+const name = legal.name || '[Nombre o razón social del responsable]';
+const address = legal.address || '[Domicilio]';
+const email = legal.privacyEmail || site.contact.email || '[Correo para solicitudes de privacidad]';
+const updated = legal.updated || '[Fecha de última actualización]';
+const pending = !legal.name || !legal.address || !(legal.privacyEmail || site.contact.email);
+---
+
+<BaseLayout
+  title="Aviso de privacidad"
+  description="Cómo tratamos los datos personales que nos compartes a través del formulario de contacto."
+  noindex
+>
+  <Prose
+    title="Aviso de privacidad"
+    intro="Cómo tratamos los datos que nos compartes cuando nos escribes desde este sitio."
+  >
+    {
+      pending && (
+        <p>
+          <span class="pending">
+            Plantilla pendiente: completar los datos entre corchetes y revisarla con asesoría legal antes de publicar.
+          </span>
+        </p>
+      )
+    }
+
+    <h2>Responsable</h2>
+    <p>{name}, con domicilio en {address}, es responsable del tratamiento de tus datos personales.</p>
+
+    <h2>Datos que recabamos</h2>
+    <p>A través del formulario de contacto podemos recabar:</p>
+    <ul>
+      <li>Nombre.</li>
+      <li>Empresa (opcional).</li>
+      <li>Correo electrónico.</li>
+      <li>Número de WhatsApp o teléfono (opcional).</li>
+      <li>El tema que te interesa y el mensaje que decidas escribir.</li>
+    </ul>
+    <p>No solicitamos datos personales sensibles. Te pedimos no incluirlos en tu mensaje.</p>
+
+    <h2>Para qué los usamos</h2>
+    <ul>
+      <li>Responder tu solicitud y entender lo que necesitas.</li>
+      <li>Preparar y darte seguimiento a una propuesta, si la pides.</li>
+    </ul>
+    <p>
+      No usamos tus datos para fines distintos a los anteriores sin pedirte antes tu consentimiento, y no los vendemos.
+    </p>
+
+    <h2>Con quién se comparten</h2>
+    <p>
+      Los mensajes del formulario se reciben a través de un proveedor de servicios que actúa por cuenta nuestra
+      <span class="pending">[nombre del proveedor del formulario]</span>. No transferimos tus datos a terceros para sus
+      propios fines.
+    </p>
+
+    <h2>Tus derechos</h2>
+    <p>
+      Puedes solicitar el acceso, la rectificación, la cancelación u oposición al tratamiento de tus datos (derechos
+      ARCO), así como revocar tu consentimiento, escribiendo a {email}. Te responderemos en los plazos que establece la
+      ley aplicable.
+    </p>
+
+    <h2>Cambios a este aviso</h2>
+    <p>Cualquier cambio se publicará en esta misma página. Última actualización: {updated}.</p>
+  </Prose>
+</BaseLayout>

@@ -1,0 +1,42 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import HeroVideo from '@/components/home/HeroVideo.astro';
+import Marquee from '@/components/home/Marquee.astro';
+import ProblemIndex from '@/components/home/ProblemIndex.astro';
+import WaysBento from '@/components/home/WaysBento.astro';
+import SearchShift from '@/components/home/SearchShift.astro';
+import AfterClick from '@/components/home/AfterClick.astro';
+import StackSteps from '@/components/home/StackSteps.astro';
+import ClosingCta from '@/components/blocks/ClosingCta.astro';
+import { site } from '@/config/site';
+
+const steps = [
+  { verb: 'Entendemos', text: 'Tu objetivo, tu audiencia, tu proceso actual y dónde se está perdiendo tiempo u oportunidad.' },
+  { verb: 'Priorizamos', text: 'Lo que puede tener más impacto sin agregar complejidad innecesaria.' },
+  { verb: 'Construimos', text: 'Campañas, contenido, páginas, automatizaciones, asistentes o integraciones.' },
+  { verb: 'Medimos', text: 'Lo que sucede después, para decidir qué optimizar, escalar o cambiar.' },
+];
+---
+
+<BaseLayout
+  title="IA aplicada, publicidad digital y automatización"
+  fullTitle={`${site.name} | IA aplicada, publicidad digital y automatización para empresas`}
+  description="Ayudamos a empresas a conseguir clientes, automatizar tareas y usar mejor la inteligencia artificial: ChatGPT Ads, Google y Meta Ads, WhatsApp con IA, contenido, sitios web y CRM."
+>
+  <HeroVideo />
+  <Marquee />
+  <ProblemIndex />
+  <WaysBento />
+  <SearchShift />
+  <AfterClick />
+  <StackSteps
+    title="No necesitas contratar todo."
+    intro="Si hoy necesitas captar búsquedas, empezamos ahí. Si ya tienes prospectos pero nadie les da seguimiento, quizá el problema está en la automatización. Si tu equipo pierde horas respondiendo lo mismo, WhatsApp con IA puede tener más sentido."
+    steps={steps}
+    closing="La estrategia se adapta al problema. No el problema a una lista de servicios."
+  />
+  <ClosingCta
+    title="Cuéntanos qué quieres mejorar."
+    text="Puedes llegar con un problema, un objetivo o una idea. No necesitas saber qué herramienta necesitas."
+  />
+</BaseLayout>

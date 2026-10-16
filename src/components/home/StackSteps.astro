@@ -1,0 +1,177 @@
+---
+/**
+ * Cómo trabajamos: tarjetas que se apilan al hacer scroll (position: sticky),
+ * con el título fijo a la izquierda en escritorio.
+ */
+interface Step {
+  verb: string;
+  text: string;
+}
+interface Props {
+  id?: string;
+  eyebrow?: string;
+  title: string;
+  intro: string;
+  steps: Step[];
+  closing?: string;
+}
+const { id = 'como-trabajamos', eyebrow = 'Cómo trabajamos', title, intro, steps, closing } = Astro.props;
+const tones = ['paper', 'lilac', 'night', 'violet'];
+---
+
+<section class="stack section" aria-labelledby={id}>
+  <div class="wrap stack__grid">
+    <div class="stack__aside">
+      <p class="eyebrow">{eyebrow}</p>
+      <h2 id={id} class="t-head stack__title" data-split>{title}</h2>
+      <p class="t-lead stack__intro">{intro}</p>
+    </div>
+
+    <ol class="stack__cards">
+      {
+        steps.map((s, i) => (
+          <li class={`stack__card stack__card--${tones[i % tones.length]}`} style={`--i: ${i}`}>
+            <span class="stack__num" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <h3 class="stack__verb">{s.verb}</h3>
+            <p class="stack__text">{s.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  {
+    closing && (
+      <div class="wrap">
+        <p class="stack__closing" data-scrub>
+          {closing}
+        </p>
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .stack__grid {
+    display: grid;
+    gap: var(--s-8);
+  }
+
+  .stack__aside {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+
+  .stack__title {
+    max-width: 14ch;
+  }
+
+  .stack__intro {
+    max-width: 40ch;
+  }
+
+  .stack__cards {
+    display: grid;
+    gap: var(--s-5);
+  }
+
+  .stack__card {
+    position: sticky;
+    top: calc(var(--header-h) + 1rem + var(--i) * 1.4rem);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-4) var(--s-6);
+    align-items: end;
+    min-height: clamp(15rem, 34vh, 22rem);
+    padding: clamp(1.5rem, 3vw, 2.8rem);
+    border-radius: 32px;
+    background: #fff;
+    border: 1px solid var(--c-line);
+    box-shadow: 0 -20px 50px -40px rgb(18 15 28 / 0.35); /* taste-skill-ignore: tarjetas apiladas */
+  }
+
+  .stack__card--lilac {
+    background: var(--violet-50);
+  }
+
+  .stack__card--night {
+    background: var(--night);
+    color: #f4f1fb;
+    border-color: transparent;
+  }
+
+  .stack__card--violet {
+    background: var(--violet);
+    color: #fff;
+    border-color: transparent;
+  }
+
+  .stack__num {
+    grid-column: 1 / -1;
+    align-self: start;
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--tr-label);
+    color: var(--violet);
+  }
+
+  .stack__card--night .stack__num {
+    color: var(--gold);
+  }
+
+  .stack__card--violet .stack__num {
+    color: #fff;
+  }
+
+  .stack__verb {
+    grid-column: 1 / -1;
+    font-size: clamp(2.6rem, 1.4rem + 5vw, 6rem);
+    letter-spacing: -0.055em;
+    line-height: 0.9;
+  }
+
+  .stack__text {
+    grid-column: 1 / -1;
+    max-width: 38ch;
+    font-size: var(--fs-lead);
+    line-height: 1.4;
+    opacity: 0.85;
+  }
+
+  @media (min-width: 1024px) {
+    .stack__grid {
+      grid-template-columns: 5fr 7fr;
+      align-items: start;
+    }
+
+    .stack__aside {
+      position: sticky;
+      top: calc(var(--header-h) + 3rem);
+    }
+
+    .stack__card {
+      grid-template-columns: 1fr minmax(15rem, 20rem);
+    }
+
+    .stack__verb {
+      grid-column: 1;
+    }
+
+    .stack__text {
+      grid-column: 2;
+      justify-self: end;
+    }
+  }
+
+  .stack__closing {
+    max-width: 24ch;
+    margin-top: var(--s-9);
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 4rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.05;
+  }
+</style>

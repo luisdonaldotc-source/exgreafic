@@ -1,0 +1,518 @@
+---
+/**
+ * Lo que pasa después del clic: recorrido horizontal fijado (escritorio) por las
+ * cuatro áreas que convierten y sostienen la demanda. En móvil, apilado.
+ */
+import Arrow from '@/components/ui/Arrow.astro';
+import { getService } from '@/content/services';
+
+const s = (slug: string) => getService(slug).path;
+
+const panels = [
+  {
+    id: 'contenido',
+    title: 'Contenido y redes',
+    text: 'Comunicación útil y constante, alineada con lo que el negocio necesita mover.',
+    links: [
+      { name: 'Estrategia y creación de contenido', href: s('estrategia-y-creacion-de-contenido') },
+      { name: 'Gestión de redes', href: s('gestion-de-redes-sociales') },
+      { name: 'Social Selling', href: s('social-selling') },
+    ],
+  },
+  {
+    id: 'web',
+    title: 'Web y conversión',
+    text: 'Páginas y herramientas pensadas para que la persona entienda qué hacer después.',
+    links: [
+      { name: 'Sitios web y landing pages', href: s('sitios-web-y-landing-pages') },
+      { name: 'Cotizadores, reservas y desarrollos', href: s('desarrollos-a-medida') },
+      { name: 'SEO y visibilidad en IA', href: s('seo-y-visibilidad-en-ia') },
+    ],
+  },
+  {
+    id: 'seguimiento',
+    title: 'Email y seguimiento',
+    text: 'Que un contacto no dependa de que alguien se acuerde de escribirle.',
+    links: [
+      { name: 'Email y seguimiento de prospectos', href: s('email-y-seguimiento-de-prospectos') },
+      { name: 'Newsletters', href: s('newsletters') },
+      { name: 'Automatización y CRM', href: s('automatizacion-y-crm') },
+    ],
+  },
+  {
+    id: 'medicion',
+    title: 'Medición',
+    text: 'Datos que ayudan a decidir qué mantener, mejorar o detener.',
+    links: [{ name: 'Analítica y medición', href: s('analitica-y-medicion') }],
+  },
+];
+---
+
+<section class="hs" data-theme="dark" aria-labelledby="despues-titulo" data-hscroll>
+  <div class="hs__viewport">
+    <div class="hs__track" data-hscroll-track>
+      <div class="hs__intro">
+        <p class="eyebrow">Después del clic</p>
+        <h2 id="despues-titulo" class="t-head hs__title" data-split>Lo que pasa después del clic también importa.</h2>
+        <p class="t-lead hs__lead">
+          Una campaña puede atraer a la persona correcta y aun así perderla por una página confusa, una respuesta tardía o
+          un seguimiento que nunca llegó.
+        </p>
+        <p class="hs__hint" aria-hidden="true">Sigue bajando <Arrow /></p>
+      </div>
+
+      {
+        panels.map((p) => (
+          <article class={`hs__panel hs__panel--${p.id}`}>
+            <div class="hs__art" aria-hidden="true">
+              {p.id === 'contenido' && (
+                <div class="art-posts">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+              )}
+              {p.id === 'web' && (
+                <div class="art-page">
+                  <span class="art-page__bar" />
+                  <span class="art-page__h" />
+                  <span class="art-page__l" />
+                  <span class="art-page__l art-page__l--short" />
+                  <span class="art-page__btn" />
+                  <span class="art-page__cursor" />
+                </div>
+              )}
+              {p.id === 'seguimiento' && (
+                <div class="art-flow">
+                  <span class="art-flow__line" />
+                  <span class="art-flow__dot" />
+                  <span class="art-flow__dot" />
+                  <span class="art-flow__dot" />
+                  <span class="art-flow__dot" />
+                  <span class="art-flow__packet" />
+                </div>
+              )}
+              {p.id === 'medicion' && (
+                <div class="art-bars">
+                  <span style="--h: 38%" />
+                  <span style="--h: 55%" />
+                  <span style="--h: 46%" />
+                  <span style="--h: 72%" />
+                  <span style="--h: 64%" />
+                  <span style="--h: 90%" />
+                </div>
+              )}
+            </div>
+            <div class="hs__body">
+              <h3 class="hs__panel-title">{p.title}</h3>
+              <p class="hs__panel-text">{p.text}</p>
+              <ul class="hs__links">
+                {p.links.map((l) => (
+                  <li>
+                    <a href={l.href}>
+                      {l.name} <Arrow />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+    <div class="hs__progress" aria-hidden="true" data-hscroll-progress><span></span></div>
+  </div>
+</section>
+
+<style>
+  .hs {
+    position: relative;
+    padding-block: var(--section);
+    overflow: hidden;
+  }
+
+  .hs__track {
+    display: grid;
+    gap: var(--gap);
+    padding-inline: var(--margin);
+  }
+
+  .hs__intro {
+    display: grid;
+    gap: var(--s-5);
+    align-content: center;
+    margin-bottom: var(--s-6);
+  }
+
+  .hs__title {
+    max-width: 14ch;
+  }
+
+  .hs__lead {
+    max-width: 40ch;
+  }
+
+  .hs__hint {
+    display: none;
+  }
+
+  .hs__panel {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: var(--s-6);
+    padding: clamp(1.4rem, 2.4vw, 2.2rem);
+    border-radius: 32px;
+    background: var(--night-2);
+    border: 1px solid rgb(255 255 255 / 0.08);
+  }
+
+  .hs__panel--web {
+    background: linear-gradient(160deg, var(--violet-700), var(--night-2) 70%);
+  }
+
+  .hs__panel--medicion {
+    background: linear-gradient(160deg, #2a2108, var(--night-2) 70%);
+  }
+
+  .hs__body {
+    display: grid;
+    gap: var(--s-4);
+    align-content: end;
+  }
+
+  .hs__panel-title {
+    font-size: clamp(1.8rem, 1.2rem + 2vw, 3rem);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .hs__panel-text {
+    max-width: 34ch;
+    color: var(--c-ink-soft);
+  }
+
+  .hs__links {
+    display: grid;
+    gap: 0.1rem;
+    margin-top: var(--s-2);
+  }
+
+  .hs__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 40px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .hs__links a :global(.arrow) {
+    color: var(--gold);
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .hs__links a:hover :global(.arrow) {
+    transform: translateX(5px);
+  }
+
+  .hs__progress {
+    display: none;
+  }
+
+  /* ---------- Escritorio: recorrido horizontal ---------- */
+  @media (min-width: 1024px) {
+    .hs {
+      padding-block: 0;
+    }
+
+    .hs__viewport {
+      position: relative;
+      height: 100svh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hs__track {
+      display: flex;
+      align-items: stretch;
+      gap: 1.5rem;
+      height: min(72svh, 640px);
+      padding-left: var(--margin);
+      padding-right: 12vw;
+      will-change: transform;
+    }
+
+    .hs__intro {
+      flex: 0 0 min(36vw, 520px);
+      margin: 0 3vw 0 0;
+    }
+
+    .hs__hint {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .hs__hint :global(.arrow) {
+      rotate: 90deg;
+    }
+
+    .hs__panel {
+      flex: 0 0 min(30vw, 440px);
+    }
+
+    .hs__progress {
+      display: block;
+      position: absolute;
+      left: var(--margin);
+      right: var(--margin);
+      bottom: 6svh;
+      height: 3px;
+      border-radius: 3px;
+      background: rgb(255 255 255 / 0.1);
+      overflow: hidden;
+    }
+
+    .hs__progress span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--violet), var(--gold));
+      transform: scaleX(var(--p, 0));
+      transform-origin: left center;
+    }
+  }
+
+  /* ---------- Ilustraciones ---------- */
+  .hs__art {
+    position: relative;
+    height: clamp(9rem, 22vh, 13rem);
+    border-radius: 22px;
+    background: rgb(255 255 255 / 0.04);
+    overflow: hidden;
+  }
+
+  .art-posts {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .art-posts span {
+    position: absolute;
+    width: 30%;
+    aspect-ratio: 4 / 5;
+    border-radius: 14px;
+    background: linear-gradient(160deg, var(--violet-300), var(--violet));
+    box-shadow: 0 20px 40px -20px rgb(0 0 0 / 0.6); /* taste-skill-ignore: ilustración */
+  }
+
+  .art-posts span:nth-child(1) {
+    transform: rotate(-14deg) translateX(-55%);
+    background: linear-gradient(160deg, #3a3150, #241e33);
+  }
+
+  .art-posts span:nth-child(2) {
+    transform: rotate(10deg) translateX(55%);
+    background: linear-gradient(160deg, var(--gold), #c98d15);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .art-posts span {
+      transition: transform 700ms var(--ease-spring);
+    }
+
+    .hs__panel:hover .art-posts span:nth-child(1) {
+      transform: rotate(-20deg) translateX(-85%);
+    }
+
+    .hs__panel:hover .art-posts span:nth-child(2) {
+      transform: rotate(16deg) translateX(85%);
+    }
+  }
+
+  .art-page {
+    position: absolute;
+    inset: 12% 14%;
+    border-radius: 14px;
+    background: #f6f4f0;
+    padding: 0.9rem;
+    display: grid;
+    gap: 0.45rem;
+    align-content: start;
+  }
+
+  .art-page__bar {
+    height: 6px;
+    width: 30%;
+    border-radius: 6px;
+    background: #d6d0e4;
+  }
+
+  .art-page__h {
+    height: 12px;
+    width: 80%;
+    border-radius: 6px;
+    background: #120f1c;
+    margin-top: 0.4rem;
+  }
+
+  .art-page__l {
+    height: 6px;
+    width: 92%;
+    border-radius: 6px;
+    background: #d6d0e4;
+  }
+
+  .art-page__l--short {
+    width: 60%;
+  }
+
+  .art-page__btn {
+    width: 38%;
+    height: 18px;
+    margin-top: 0.4rem;
+    border-radius: 999px;
+    background: var(--violet);
+  }
+
+  .art-page__cursor {
+    position: absolute;
+    left: 55%;
+    top: 75%;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 18px solid #120f1c;
+    transform: rotate(-30deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .art-page__cursor {
+      animation: art-cursor 3s var(--ease-in-out) infinite;
+    }
+
+    .art-page__btn {
+      animation: art-click 3s var(--ease-in-out) infinite;
+    }
+  }
+
+  @keyframes art-cursor {
+    0%,
+    100% {
+      transform: translate(40px, 20px) rotate(-30deg);
+    }
+    45%,
+    60% {
+      transform: translate(-46px, -8px) rotate(-30deg);
+    }
+  }
+
+  @keyframes art-click {
+    0%,
+    48%,
+    62%,
+    100% {
+      transform: scale(1);
+      background: var(--violet);
+    }
+    54% {
+      transform: scale(0.92);
+      background: var(--gold);
+    }
+  }
+
+  .art-flow {
+    position: absolute;
+    inset: 0 10%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .art-flow__line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    background: rgb(255 255 255 / 0.15);
+  }
+
+  .art-flow__dot {
+    position: relative;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    background: var(--night-3);
+    border: 2px solid rgb(167 139 250 / 0.6);
+  }
+
+  .art-flow__packet {
+    position: absolute;
+    left: 0;
+    top: calc(50% - 6px);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 18px var(--gold); /* taste-skill-ignore: ilustración */
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .art-flow__packet {
+      animation: art-packet 3.2s var(--ease-in-out) infinite;
+    }
+  }
+
+  @keyframes art-packet {
+    from {
+      left: 0%;
+    }
+    to {
+      left: calc(100% - 12px);
+    }
+  }
+
+  .art-bars {
+    position: absolute;
+    inset: 18% 12% 14%;
+    display: flex;
+    align-items: flex-end;
+    gap: 8%;
+  }
+
+  .art-bars span {
+    flex: 1;
+    height: var(--h);
+    border-radius: 8px 8px 3px 3px;
+    background: linear-gradient(180deg, var(--gold), rgb(245 196 81 / 0.25));
+    transform-origin: bottom;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .art-bars span {
+      animation: art-bar 2.8s var(--ease-in-out) infinite alternate;
+    }
+
+    .art-bars span:nth-child(2n) {
+      animation-delay: 0.4s;
+    }
+
+    .art-bars span:nth-child(3n) {
+      animation-delay: 0.8s;
+    }
+  }
+
+  @keyframes art-bar {
+    from {
+      transform: scaleY(0.55);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+</style>

@@ -1,0 +1,196 @@
+---
+/** Comparativa en tabla (3+ columnas). La última columna se resalta. */
+interface Props {
+  id: string;
+  title: string;
+  statement?: string;
+  intro?: string;
+  head: string[];
+  rows: string[][];
+  theme?: 'ground' | 'surface' | 'dark';
+}
+const { id, title, statement, intro, head, rows, theme = 'ground' } = Astro.props;
+---
+
+<section class="compare section" aria-labelledby={id} data-theme={theme === 'ground' ? undefined : theme}>
+  <div class="wrap">
+    <div class="compare__head">
+      <h2 id={id} class="t-head compare__title" data-split>{title}</h2>
+      {statement && <p class="compare__statement">{statement}</p>}
+      {intro && <p class="compare__intro">{intro}</p>}
+    </div>
+    <div class="compare__box" data-reveal="self">
+      <table class="compare__table">
+        <thead>
+          <tr>
+            {
+              head.map((h, i) => (
+                <th scope="col" class:list={[i === 0 && 'compare__corner', i === head.length - 1 && 'is-hl']}>
+                  {h}
+                </th>
+              ))
+            }
+          </tr>
+        </thead>
+        <tbody>
+          {
+            rows.map((r) => (
+              <tr>
+                <th scope="row">{r[0]}</th>
+                {r.slice(1).map((c, i) => (
+                  <td data-label={head[i + 1]} class:list={[i === r.length - 2 && 'is-hl']}>
+                    {c}
+                  </td>
+                ))}
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<style>
+  .compare__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-7);
+  }
+
+  .compare__title {
+    max-width: 16ch;
+  }
+
+  .compare__statement {
+    max-width: 34ch;
+    font-size: clamp(1.35rem, 1.05rem + 1.1vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    color: var(--c-ink-soft);
+  }
+
+  @media (min-width: 1024px) {
+    .compare__head {
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+
+  .compare__box {
+    border-radius: 28px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    overflow: hidden;
+  }
+
+  .compare__table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .compare__table th,
+  .compare__table td {
+    padding: 1.2rem 1.4rem;
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.45;
+  }
+
+  .compare__table thead th {
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    border-bottom: 1px solid var(--c-line);
+  }
+
+  .compare__table thead .compare__corner {
+    font-size: var(--fs-label);
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--c-ink-soft);
+    vertical-align: bottom;
+  }
+
+  .compare__table tbody tr + tr th,
+  .compare__table tbody tr + tr td {
+    border-top: 1px solid var(--c-line);
+  }
+
+  .compare__table tbody th {
+    width: 24%;
+    font-weight: 700;
+  }
+
+  .compare__table td {
+    color: var(--c-ink-soft);
+  }
+
+  .compare__table .is-hl {
+    background: color-mix(in srgb, var(--violet) 9%, transparent);
+    color: var(--c-ink);
+  }
+
+  .compare__table thead .is-hl {
+    color: var(--violet);
+  }
+
+  @media (max-width: 767px) {
+    .compare__table thead {
+      position: absolute;
+      width: 1px;
+      height: 1px; /* taste-skill-ignore: encabezado solo para lectores de pantalla */
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .compare__table,
+    .compare__table tbody,
+    .compare__table tr,
+    .compare__table th,
+    .compare__table td {
+      display: block;
+      width: auto !important;
+    }
+
+    .compare__table tbody tr {
+      padding: 1rem 0;
+    }
+
+    .compare__table tbody tr + tr {
+      border-top: 1px solid var(--c-line);
+    }
+
+    .compare__table tbody tr + tr th,
+    .compare__table tbody tr + tr td {
+      border-top: 0;
+    }
+
+    .compare__table th,
+    .compare__table td {
+      padding: 0.4rem 1.2rem;
+    }
+
+    .compare__table tbody th {
+      font-size: var(--fs-lead);
+    }
+
+    .compare__table tbody td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: var(--fs-label);
+      font-weight: 700;
+      letter-spacing: var(--tr-label);
+      text-transform: uppercase;
+      color: var(--c-ink-soft);
+    }
+
+    .compare__table .is-hl {
+      margin: 0.4rem 0.6rem;
+      border-radius: 14px;
+    }
+  }
+</style>

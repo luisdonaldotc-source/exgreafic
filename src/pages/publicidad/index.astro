@@ -1,0 +1,76 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import ChannelMap from '@/components/ads/ChannelMap.astro';
+import ListBlock from '@/components/blocks/ListBlock.astro';
+import Note from '@/components/blocks/Note.astro';
+import VideoBand from '@/components/blocks/VideoBand.astro';
+import FaqBlock from '@/components/blocks/FaqBlock.astro';
+import ClosingCta from '@/components/blocks/ClosingCta.astro';
+import { generalFaqs } from '@/content/faqs';
+import { service, faqPage } from '@/lib/schema';
+
+const base = Astro.site ?? new URL(Astro.url.origin);
+const path = '/publicidad/';
+const description =
+  'Publicidad digital según la intención de tu cliente: ChatGPT Ads, Google Ads, Meta Ads, LinkedIn Ads, TikTok y YouTube, con landing, medición y seguimiento.';
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Publicidad', path },
+];
+const faqs = [generalFaqs[2], generalFaqs[3], generalFaqs[8]];
+---
+
+<BaseLayout
+  title="Publicidad digital: ChatGPT, Google, Meta y LinkedIn Ads"
+  description={description}
+  crumbs={crumbs}
+  active="publicidad"
+  schema={[service(base, { name: 'Publicidad digital', description, path }), faqPage(faqs)]}
+>
+  <PageHero
+    title="Publicidad digital"
+    statement="Aparece donde existe una oportunidad, no en todas partes."
+    text="Diseñamos y gestionamos campañas según la intención de tu cliente, el tipo de decisión y lo que realmente quieres generar: mensajes, llamadas, registros, citas, cotizaciones, oportunidades o ventas."
+    cta={{ label: 'Revisar mis canales', href: '/contacto/?tema=publicidad' }}
+    secondary={{ label: 'Conocer ChatGPT Ads', href: '/publicidad/chatgpt-ads/' }}
+    crumbs={crumbs}
+    family="publicidad"
+  />
+
+  <ChannelMap />
+
+  <ListBlock
+    id="que-incluye"
+    title="Qué incluye nuestro trabajo"
+    columns={3}
+    theme="surface"
+    items={[
+      'Diagnóstico del objetivo y de la demanda.',
+      'Selección de canal y estructura de campaña.',
+      'Segmentación y audiencias.',
+      'Textos, conceptos y piezas creativas.',
+      'Configuración de conversiones y etiquetas UTM.',
+      'Landing pages o formularios cuando hacen falta.',
+      'Optimización y lectura de resultados.',
+      'Remarketing.',
+      'Recomendaciones de presupuesto según desempeño.',
+    ]}
+  />
+
+  <Note
+    id="antes-de-invertir"
+    title="Antes de invertir"
+    text="Revisamos que la oferta se entienda, que la página convierta y que alguien dé seguimiento."
+    detail="Enviar más tráfico a un proceso roto solo hace más caro el problema."
+  />
+
+  <VideoBand clip="ciudad" text="Tu cliente ya está buscando. La pregunta es dónde te encuentra." />
+
+  <FaqBlock faqs={faqs} />
+  <ClosingCta
+    title="Revisemos tus canales"
+    text="Te decimos dónde tiene sentido invertir primero, qué necesita tu página y cómo medir lo que pase después."
+    cta={{ label: 'Revisar mis canales', href: '/contacto/?tema=publicidad' }}
+  />
+</BaseLayout>

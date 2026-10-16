@@ -1,0 +1,380 @@
+---
+/**
+ * Índice de problemas: la pieza interactiva del Home.
+ * El visitante elige la frase que se parece a su situación y ve qué suele estar
+ * pasando, por dónde empezaríamos y un enlace que preselecciona el formulario.
+ *
+ * Sin JS: todas las respuestas visibles. Móvil: acordeón. Escritorio: lista + panel fijo.
+ */
+import Button from '@/components/ui/Button.astro';
+import { problems } from '@/content/problems';
+import { getService } from '@/content/services';
+---
+
+<section class="problems section" id="por-donde-empezar" aria-labelledby="problemas-titulo">
+  <div class="wrap">
+    <div class="problems__head grid">
+      <p class="eyebrow problems__eyebrow">Por dónde empezar</p>
+      <h2 id="problemas-titulo" class="problems__title t-head" data-split>¿Qué quieres resolver?</h2>
+      <p class="problems__intro t-lead">
+        No necesitas saber qué servicio pedir. Elige la frase que más se parece a tu situación.
+      </p>
+    </div>
+
+    <div class="problems__body" data-problems style={`--rows: ${problems.length}`}>
+      {
+        problems.map((p, i) => (
+          <div class="problem" data-problem={p.id}>
+            <h3 class="problem__q">
+              <button
+                type="button"
+                id={`pq-${p.id}`}
+                aria-expanded={i === 0 ? 'true' : 'false'}
+                aria-controls={`pa-${p.id}`}
+                data-problem-trigger
+              >
+                <span class="problem__q-text">{p.problem}</span>
+                <span class="problem__sign" aria-hidden="true" />
+              </button>
+            </h3>
+            <div class="problem__a" id={`pa-${p.id}`}>
+              <div class="problem__a-clip">
+              <div class="problem__a-inner">
+                <p class="problem__label">Lo que suele pasar</p>
+                <p class="problem__text">{p.diagnosis}</p>
+                <p class="problem__label">Por dónde empezaríamos</p>
+                <p class="problem__text">{p.approach}</p>
+                <p class="problem__label">Relacionado</p>
+                <ul class="problem__services">
+                  {p.services.map((slug) => {
+                    const s = getService(slug);
+                    return (
+                      <li>
+                        <a href={s.path}>{s.name}</a>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <Button href={`/contacto/?tema=${p.topic}`} class="problem__cta">
+                  Revisemos tu caso
+                </Button>
+              </div>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-problems]');
+  if (root) {
+    const desktop = window.matchMedia('(min-width: 1024px)');
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const triggers = [...root.querySelectorAll<HTMLButtonElement>('[data-problem-trigger]')];
+    let hoverTimer: number | undefined;
+
+    root.classList.add('is-enhanced');
+
+    const setActive = (target: HTMLButtonElement | null) => {
+      triggers.forEach((t) => {
+        const on = t === target;
+        t.setAttribute('aria-expanded', String(on));
+        t.closest('.problem')?.toggleAttribute('data-active', on);
+      });
+    };
+
+    const ensureOne = () => {
+      // En escritorio siempre hay una respuesta visible.
+      if (desktop.matches && !triggers.some((t) => t.getAttribute('aria-expanded') === 'true')) {
+        setActive(triggers[0]);
+      }
+    };
+
+    setActive(triggers[0]);
+
+    triggers.forEach((t, i) => {
+      t.addEventListener('click', () => {
+        const open = t.getAttribute('aria-expanded') === 'true';
+        if (desktop.matches) setActive(t);
+        else setActive(open ? null : t);
+      });
+      t.addEventListener('pointerenter', () => {
+        if (!desktop.matches || !finePointer.matches) return;
+        clearTimeout(hoverTimer);
+        hoverTimer = window.setTimeout(() => setActive(t), 70);
+      });
+      t.addEventListener('pointerleave', () => clearTimeout(hoverTimer));
+      t.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+        e.preventDefault();
+        const next = triggers[(i + (e.key === 'ArrowDown' ? 1 : -1) + triggers.length) % triggers.length];
+        next.focus();
+        if (desktop.matches) setActive(next);
+      });
+    });
+
+    desktop.addEventListener('change', ensureOne);
+  }
+</script>
+
+<style>
+  .problems__head {
+    row-gap: var(--s-5);
+    margin-bottom: var(--s-8);
+  }
+
+  .problems__title,
+  .problems__eyebrow {
+    grid-column: 1 / -1;
+  }
+
+  .problems__intro {
+    grid-column: 1 / -1;
+    max-width: 34ch;
+  }
+
+  @media (min-width: 1024px) {
+    .problems__title {
+      grid-column: 1 / span 7;
+    }
+
+    .problems__intro {
+      grid-column: 8 / -1;
+      align-self: end;
+    }
+  }
+
+  /* ---------- Preguntas ---------- */
+  .problem__q button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5);
+    width: 100%;
+    padding-block: 0.9rem;
+    text-align: left;
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.18;
+    transition: color var(--t-fast) ease;
+  }
+
+  .problem__q-text {
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .problem__sign {
+    position: relative;
+    flex: none;
+    width: 14px;
+    height: 14px;
+  }
+
+  .problem__sign::before,
+  .problem__sign::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 0;
+    width: 14px;
+    height: 2px;
+    background: currentColor;
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .problem__sign::after {
+    transform: rotate(90deg);
+  }
+
+  /* ---------- Respuestas ---------- */
+  .problem__a-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--s-5) var(--s-5) var(--s-6);
+    border-radius: 24px;
+    background: #fff;
+    border: 1px solid var(--c-line);
+    box-shadow: 0 30px 60px -40px rgb(91 33 182 / 0.45); /* taste-skill-ignore: tarjeta de respuesta */
+  }
+
+  .problem__label {
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--violet);
+  }
+
+  .problem__text {
+    margin: 0.3rem 0 var(--s-5);
+    font-family: var(--font-serif);
+    font-size: var(--fs-body);
+    line-height: 1.48;
+    max-width: 46ch;
+  }
+
+  .problem__services {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1rem 1.1rem;
+    margin: 0.2rem 0 var(--s-6);
+  }
+
+  .problem__services a {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    font-weight: var(--fw-ui);
+    font-size: 1rem;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    transition: color var(--t-fast) ease;
+  }
+
+  .problem__services a:hover {
+    color: var(--c-accent);
+    text-decoration-color: currentColor;
+  }
+
+  /* ---------- Con JS: acordeón (móvil) ---------- */
+  .is-enhanced .problem__a {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--t-mid) var(--ease-out);
+  }
+
+  .is-enhanced .problem__a-clip {
+    min-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: visibility 0s linear var(--t-mid);
+  }
+
+  .is-enhanced .problem[data-active] .problem__a {
+    grid-template-rows: 1fr;
+  }
+
+  .is-enhanced .problem[data-active] .problem__a-clip {
+    visibility: visible;
+    transition: visibility 0s;
+  }
+
+  .is-enhanced .problem[data-active] .problem__sign::after {
+    transform: rotate(0deg);
+  }
+
+  .is-enhanced .problem[data-active] .problem__a-inner {
+    margin-bottom: var(--s-4);
+  }
+
+  /* Sin JS: todas las respuestas abiertas, sin signo. */
+  .problems__body:not(.is-enhanced) .problem__sign {
+    display: none;
+  }
+
+  .problems__body:not(.is-enhanced) .problem__a-inner {
+    margin-bottom: var(--s-5);
+  }
+
+  /* ---------- Escritorio: lista + panel fijo ---------- */
+  @media (min-width: 1024px) {
+    .problems__body.is-enhanced {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--gap);
+      grid-auto-rows: auto;
+    }
+
+    .is-enhanced .problem {
+      display: contents;
+    }
+
+    .is-enhanced .problem__q {
+      grid-column: 1 / span 7;
+    }
+
+    .is-enhanced .problem__q button {
+      padding-block: 0.55rem;
+    }
+
+    .is-enhanced .problem__sign {
+      display: none;
+    }
+
+    .is-enhanced .problem__q-text {
+      position: relative;
+    }
+
+    .is-enhanced .problem__q-text::before {
+      content: '';
+      position: absolute;
+      left: -1.1em;
+      top: 0.42em;
+      width: 0.42em;
+      height: 0.42em;
+      background: var(--c-accent);
+      opacity: 0;
+      transform: scale(0.5);
+      transition:
+        opacity var(--t-fast) ease,
+        transform var(--t-mid) var(--ease-out);
+    }
+
+    .is-enhanced .problem[data-active] .problem__q-text {
+      transform: translateX(1.1em);
+    }
+
+    .is-enhanced .problem[data-active] .problem__q-text::before {
+      opacity: 1;
+      transform: none;
+    }
+
+    .is-enhanced .problem__q button:hover {
+      color: var(--c-accent);
+    }
+
+    .is-enhanced .problem__a {
+      grid-column: 8 / -1;
+      grid-row: 1 / span var(--rows);
+      align-self: start;
+      position: sticky;
+      top: calc(var(--header-h) + var(--s-5));
+      display: block;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition:
+        opacity var(--t-mid) var(--ease-out),
+        transform var(--t-mid) var(--ease-out),
+        visibility 0s linear var(--t-mid);
+    }
+
+    .is-enhanced .problem__a-clip {
+      visibility: inherit;
+      overflow: visible;
+    }
+
+    .is-enhanced .problem__a-inner {
+      margin: 0;
+      padding: var(--s-6) var(--s-6) var(--s-7);
+    }
+
+    .is-enhanced .problem[data-active] .problem__a {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition:
+        opacity var(--t-mid) var(--ease-out) 60ms,
+        transform var(--t-mid) var(--ease-out) 60ms,
+        visibility 0s;
+    }
+
+    .is-enhanced .problem[data-active] .problem__a-inner {
+      margin: 0;
+    }
+  }
+</style>

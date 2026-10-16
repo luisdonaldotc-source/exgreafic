@@ -1,0 +1,171 @@
+---
+/**
+ * Situación → respuesta. Es una tabla real (accesible y citable), presentada
+ * como filas de tarjetas con una flecha entre ambas columnas.
+ */
+interface Props {
+  id: string;
+  title: string;
+  intro?: string;
+  head: [string, string];
+  rows: [string, string][];
+  quote?: boolean;
+  theme?: 'ground' | 'surface' | 'dark';
+}
+const { id, title, intro, head, rows, quote = false, theme = 'ground' } = Astro.props;
+---
+
+<section class="pairs section" aria-labelledby={id} data-theme={theme === 'ground' ? undefined : theme}>
+  <div class="wrap">
+    <div class="pairs__head">
+      <h2 id={id} class="t-head pairs__title" data-split>{title}</h2>
+      {intro && <p class="t-lead pairs__intro">{intro}</p>}
+    </div>
+    <table class:list={['pairs__table', quote && 'pairs__table--quote']}>
+      <thead>
+        <tr>
+          <th scope="col">{head[0]}</th>
+          <th scope="col">{head[1]}</th>
+        </tr>
+      </thead>
+      <tbody data-reveal>
+        {
+          rows.map(([a, b]) => (
+            <tr>
+              <th scope="row">{quote ? `“${a}”` : a}</th>
+              <td>{b}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .pairs__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-7);
+  }
+
+  .pairs__title {
+    max-width: 16ch;
+  }
+
+  .pairs__intro {
+    max-width: 44ch;
+  }
+
+  @media (min-width: 1024px) {
+    .pairs__head {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: end;
+      column-gap: var(--gap);
+    }
+  }
+
+  .pairs__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .pairs__table thead th {
+    padding: 0 1.4rem var(--s-3);
+    text-align: left;
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--c-ink-soft);
+  }
+
+  .pairs__table tbody {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .pairs__table thead tr,
+  .pairs__table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 0.75rem;
+  }
+
+  .pairs__table tbody th,
+  .pairs__table tbody td {
+    position: relative;
+    padding: 1.3rem 1.4rem;
+    text-align: left;
+    vertical-align: top;
+    border-radius: 20px;
+    line-height: 1.45;
+  }
+
+  .pairs__table tbody th {
+    font-weight: 700;
+    font-size: var(--fs-body);
+    background: color-mix(in srgb, var(--c-accent) 12%, var(--c-surface));
+  }
+
+  .pairs__table--quote tbody th {
+    font-size: var(--fs-lead);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+  }
+
+  .pairs__table tbody td {
+    background: var(--c-surface);
+    border: 1px solid var(--c-line);
+    color: var(--c-ink);
+  }
+
+  /* Flecha entre la situación y la respuesta. */
+  .pairs__table tbody td::before {
+    content: '';
+    position: absolute;
+    left: -1.2rem;
+    top: 50%;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-top: -0.8rem;
+    border-radius: 50%;
+    background: var(--c-accent) no-repeat center / 0.8rem
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M2 8h11M9 4l4 4-4 4'/%3E%3C/svg%3E");
+  }
+
+  :global([data-theme='dark']) .pairs__table tbody td::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2316111f' stroke-width='2'%3E%3Cpath d='M2 8h11M9 4l4 4-4 4'/%3E%3C/svg%3E");
+  }
+
+  .pairs__table tbody tr {
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .pairs__table tbody tr:hover {
+    transform: translateX(6px);
+  }
+
+  @media (max-width: 767px) {
+    .pairs__table thead {
+      position: absolute;
+      width: 1px;
+      height: 1px; /* taste-skill-ignore: encabezado solo para lectores de pantalla */
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .pairs__table tbody tr {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.4rem;
+    }
+
+    .pairs__table tbody td::before {
+      left: 50%;
+      top: -0.95rem;
+      margin: 0 0 0 -0.8rem;
+      transform: rotate(90deg);
+    }
+  }
+</style>

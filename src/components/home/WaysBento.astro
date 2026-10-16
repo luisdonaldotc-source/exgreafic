@@ -1,0 +1,285 @@
+---
+/**
+ * Tres formas de empezar, como bento con demos vivas.
+ * Rejilla de 12 columnas: IA (7 col × 2 filas) + Publicidad (5) + WhatsApp (5). Sin huecos.
+ */
+import Arrow from '@/components/ui/Arrow.astro';
+import StreamDemo from '@/components/demos/StreamDemo.astro';
+import AdsDemo from '@/components/demos/AdsDemo.astro';
+import ChatDemo from '@/components/demos/ChatDemo.astro';
+import { iaTasks } from '@/content/demos';
+---
+
+<section class="ways section" data-theme="dark" aria-labelledby="formas-titulo">
+  <div class="wrap">
+    <div class="ways__head">
+      <p class="eyebrow">Tres formas de empezar</p>
+      <h2 id="formas-titulo" class="t-head ways__title" data-split>
+        La tecnología cambia rápido. El objetivo de tu negocio, no.
+      </h2>
+      <p class="t-lead ways__intro" data-reveal="self">
+        Atraer a las personas correctas, atenderlas bien y vender mejor. Estas son las tres puertas por las que más
+        conviene entrar.
+      </p>
+    </div>
+
+    <div class="bento">
+      <article class="card card--ia" data-spotlight data-reveal="self">
+        <div class="card__text">
+          <p class="card__kicker">IA aplicada a tu negocio</p>
+          <h3 class="card__title">Asistentes y flujos que trabajan con tu información.</h3>
+          <p class="card__body">
+            La IA puede hacer mucho más que redactar textos. La aterrizamos en propuestas, investigación, atención y
+            documentos de tu operación.
+          </p>
+          <a class="card__link" href="/inteligencia-artificial/">Explorar IA <Arrow /></a>
+        </div>
+        <StreamDemo tasks={iaTasks} tabs class="card__demo" />
+      </article>
+
+      <article class="card card--ads" data-spotlight data-reveal="self">
+        <div class="card__text">
+          <p class="card__kicker">Publicidad y ChatGPT Ads</p>
+          <h3 class="card__title">Aparece cuando tu cliente compara y decide.</h3>
+          <a class="card__link" href="/publicidad/chatgpt-ads/">Conocer ChatGPT Ads <Arrow /></a>
+        </div>
+        <AdsDemo class="card__demo" />
+      </article>
+
+      <article class="card card--wa" data-spotlight data-reveal="self">
+        <div class="card__text">
+          <p class="card__kicker">WhatsApp con IA</p>
+          <h3 class="card__title">Responde, orienta y pasa a tu equipo lo importante.</h3>
+          <a class="card__link" href="/inteligencia-artificial/whatsapp-con-ia/">Ver cómo funciona <Arrow /></a>
+        </div>
+        <ChatDemo class="card__demo" />
+      </article>
+
+      <article class="card card--learn" data-spotlight data-reveal="self">
+        <div class="card__text">
+          <p class="card__kicker">Capacitación en IA</p>
+          <h3 class="card__title">Aprende a trabajar mejor con IA, con las tareas de tu equipo.</h3>
+          <p class="card__body">Para personas, equipos y empresas. Dos caminos según dónde estés hoy.</p>
+        </div>
+        <div class="paths-mini">
+          <a class="path-mini path-mini--learn" href="/inteligencia-artificial/capacitacion/">
+            <span class="path-mini__title">Quiero aprender</span>
+            <span class="path-mini__text">Capacitación práctica: contexto, criterios de calidad y flujos que se repiten.</span>
+            <span class="path-mini__go"><Arrow dir="up-right" /></span>
+          </a>
+          <a class="path-mini path-mini--idea" href="/contacto/?tema=idea">
+            <span class="path-mini__title">Tengo una idea</span>
+            <span class="path-mini__text">Acompañamiento para convertirla en un proyecto: prototipo, pruebas y adopción.</span>
+            <span class="path-mini__go"><Arrow dir="up-right" /></span>
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ways__head {
+    display: grid;
+    gap: var(--s-5);
+    margin-bottom: var(--s-8);
+  }
+
+  .ways__title {
+    max-width: 20ch;
+  }
+
+  .ways__intro {
+    max-width: 46ch;
+  }
+
+  .bento {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--gap);
+    grid-auto-flow: dense;
+  }
+
+  @media (min-width: 1024px) {
+    .bento {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .card--ia,
+    .card--learn {
+      grid-column: span 7;
+    }
+
+    .card--ads,
+    .card--wa {
+      grid-column: span 5;
+    }
+  }
+
+  /* ---------- Tarjeta con luz que sigue al cursor ---------- */
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-6);
+    padding: clamp(1.4rem, 2.4vw, 2.2rem);
+    border-radius: 28px;
+    background: var(--night-2);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      border-color var(--t-mid) ease,
+      transform var(--t-mid) var(--ease-out);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 0%), rgb(124 58 237 / 0.22), transparent 60%);
+    opacity: 0;
+    transition: opacity 500ms ease;
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card:hover {
+    border-color: rgb(167 139 250 / 0.35);
+  }
+
+  .card :global(.sd),
+  .card :global(.ads),
+  .card :global(.cd) {
+    margin-top: auto;
+  }
+
+  /* Dos caminos de capacitación */
+  .paths-mini {
+    display: grid;
+    gap: var(--s-3);
+    margin-top: auto;
+  }
+
+  @media (min-width: 640px) {
+    .paths-mini {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .path-mini {
+    position: relative;
+    display: grid;
+    gap: var(--s-2);
+    align-content: end;
+    min-height: 13rem;
+    padding: var(--s-5);
+    border-radius: 22px;
+    text-decoration: none;
+    overflow: hidden;
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .path-mini:hover {
+    transform: translateY(-6px);
+  }
+
+  .path-mini--learn {
+    background: linear-gradient(150deg, var(--violet) 0%, var(--violet-700) 100%);
+    color: #fff;
+  }
+
+  .path-mini--idea {
+    background: linear-gradient(150deg, var(--gold) 0%, #e9a923 100%);
+    color: #16111f;
+  }
+
+  .path-mini__title {
+    font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .path-mini__text {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    opacity: 0.9;
+  }
+
+  .path-mini__go {
+    position: absolute;
+    top: var(--s-4);
+    right: var(--s-4);
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.18);
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .path-mini--idea .path-mini__go {
+    background: rgb(22 17 31 / 0.12);
+  }
+
+  .path-mini:hover .path-mini__go {
+    transform: rotate(45deg);
+  }
+
+  .card--ia {
+    background:
+      radial-gradient(80% 60% at 100% 0%, rgb(124 58 237 / 0.28), transparent 60%),
+      var(--night-2);
+  }
+
+  .card__text {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+  }
+
+  .card__kicker {
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .card__title {
+    max-width: 22ch;
+    font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.3rem);
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+
+  .card__body {
+    max-width: 46ch;
+    color: var(--c-ink-soft);
+  }
+
+  .card__link {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .card__link :global(.arrow) {
+    color: var(--gold);
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .card__link:hover :global(.arrow) {
+    transform: translateX(5px);
+  }
+</style>

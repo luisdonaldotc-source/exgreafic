@@ -1,0 +1,159 @@
+---
+/**
+ * Demo ilustrativa: una pregunta en un asistente, la respuesta y un anuncio
+ * que aparece separado de ella. No reproduce la interfaz de ningún producto.
+ */
+interface Props {
+  question?: string;
+  answer?: string;
+  adTitle?: string;
+  adText?: string;
+  class?: string;
+}
+const {
+  question = 'Tengo un despacho de seis personas y seguimos con hojas de cálculo. ¿Qué opciones tengo?',
+  answer = 'Hay tres caminos comunes: un sistema contable en la nube, uno especializado para despachos o automatizar lo que ya usas. Depende de cuántos clientes atiendes.',
+  adTitle = 'Software contable para despachos',
+  adText = 'Un anuncio de ejemplo, mostrado aparte de la respuesta.',
+  class: className,
+} = Astro.props;
+---
+
+<div class:list={['ads', className]} data-demo="ads" data-ui>
+  <div class="ads__bar">
+    <span class="ads__badge">Conversación</span>
+    <span class="ads__note">Ejemplo ilustrativo</span>
+  </div>
+  <p class="ads__q" data-q data-text={question}>{question}</p>
+  <div class="ads__a">
+    <span class="ads__ai" aria-hidden="true"></span>
+    <p data-a data-text={answer}>{answer}</p>
+  </div>
+  <div class="ads__ad">
+    <span class="ads__label">Anuncio</span>
+    <strong>{adTitle}</strong>
+    <span class="ads__ad-text">{adText}</span>
+  </div>
+</div>
+
+<script>
+  import '@/scripts/demos';
+</script>
+
+<style>
+  .ads {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.1rem 1.2rem 1.2rem;
+    border-radius: 22px;
+    background: rgb(255 255 255 / 0.04);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    color: #f4f1fb;
+    min-height: 19rem;
+    align-content: start;
+  }
+
+  .ads--light {
+    background: #fff;
+    border-color: var(--c-line);
+    color: var(--c-ink);
+  }
+
+  .ads__bar {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+  }
+
+  .ads__badge {
+    font-weight: 700;
+  }
+
+  .ads__note {
+    color: #a9a2bf;
+  }
+
+  .ads--light .ads__note {
+    color: var(--c-ink-soft);
+  }
+
+  .ads__q {
+    justify-self: end;
+    max-width: 88%;
+    padding: 0.7rem 0.95rem;
+    border-radius: 18px 18px 4px 18px;
+    background: rgb(255 255 255 / 0.1);
+    font-weight: 600;
+    line-height: 1.4;
+    min-height: 2.8em;
+  }
+
+  .ads--light .ads__q {
+    background: var(--paper-2);
+  }
+
+  .ads__a {
+    display: grid;
+    grid-template-columns: 1.6rem 1fr;
+    gap: 0.6rem;
+    line-height: 1.5;
+    color: #d9d3ea;
+  }
+
+  .ads--light .ads__a {
+    color: var(--c-ink);
+  }
+
+  .ads__ai {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: conic-gradient(from 180deg, var(--violet), var(--violet-300), var(--violet));
+  }
+
+  .ads__ad {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.85rem 1rem;
+    border-radius: 16px;
+    border: 1px dashed rgb(245 196 81 / 0.6);
+    background: rgb(245 196 81 / 0.08);
+    transition:
+      opacity 600ms var(--ease-out),
+      transform 600ms var(--ease-out);
+  }
+
+  .ads__label {
+    justify-self: start;
+    padding: 0.1rem 0.5rem;
+    border-radius: var(--pill);
+    background: var(--gold);
+    color: #16111f;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ads__ad-text {
+    font-size: 0.85rem;
+    color: #b9b2cf;
+  }
+
+  .ads--light .ads__ad-text {
+    color: var(--c-ink-soft);
+  }
+
+  /* Etapas (solo con JS). */
+  :global(html.js) .ads:not(.stage-2) .ads__a,
+  :global(html.js) .ads:not(.stage-3) .ads__ad {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .ads__a {
+    transition:
+      opacity 500ms var(--ease-out),
+      transform 500ms var(--ease-out);
+  }
+</style>

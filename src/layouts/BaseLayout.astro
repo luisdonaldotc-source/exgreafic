@@ -1,0 +1,114 @@
+---
+import { Font } from 'astro:assets';
+import '@/styles/global.css';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import { site } from '@/config/site';
+import { organization, website, breadcrumbs, graph, type Crumb } from '@/lib/schema';
+
+interface Props {
+  /** Título de la página (sin el nombre del sitio). */
+  title: string;
+  description: string;
+  /** Título completo opcional; si no se da, se usa "título | marca". */
+  fullTitle?: string;
+  noindex?: boolean;
+  /** Nodos JSON-LD propios de la página (Service, FAQPage...). */
+  schema?: object[];
+  crumbs?: Crumb[];
+  ogImage?: string;
+  /** Familia activa en la navegación. */
+  active?: string;
+}
+
+const { title, description, fullTitle, noindex = false, schema = [], crumbs, ogImage = '/og/default.png', active } =
+  Astro.props;
+
+const base = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(Astro.url.pathname, base).toString();
+const pageTitle = fullTitle ?? `${title} | ${site.name}`;
+const ogImageUrl = new URL(ogImage, base).toString();
+
+const jsonLd = graph([
+  organization(base),
+  website(base),
+  ...(crumbs ? [breadcrumbs(base, crumbs)] : []),
+  ...schema,
+]);
+---
+
+<!doctype html>
+<html lang={site.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="theme-color" content="#0b0912" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={site.ogLocale} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <Font cssVariable="--font-sans" preload />
+
+    <script is:inline>
+      // Activa las entradas animadas solo con JS. Si el script principal no
+      // llega a tiempo, todo el contenido se muestra igual.
+      document.documentElement.classList.add('js');
+      window.__revealTimer = setTimeout(function () {
+        document.documentElement.classList.add('no-reveal');
+      }, 2500);
+    </script>
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+    <Header active={active} />
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '@/scripts/site';
+      import '@/scripts/motion';
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: var(--c-ink);
+    color: var(--c-ground);
+    font-weight: var(--fw-ui);
+    text-decoration: none;
+    transform: translateY(-200%);
+    transition: transform var(--t-fast) var(--ease-out);
+  }
+
+  .skip:focus-visible {
+    transform: none;
+  }
+
+  main:focus {
+    outline: none;
+  }
+</style>

@@ -1,0 +1,105 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import TwoPaths from '@/components/ia/TwoPaths.astro';
+import ListBlock from '@/components/blocks/ListBlock.astro';
+import FormatRows from '@/components/blocks/FormatRows.astro';
+import SplitText from '@/components/blocks/SplitText.astro';
+import RelatedServices from '@/components/blocks/RelatedServices.astro';
+import ClosingCta from '@/components/blocks/ClosingCta.astro';
+import { service } from '@/lib/schema';
+
+const base = Astro.site ?? new URL(Astro.url.origin);
+const path = '/inteligencia-artificial/capacitacion/';
+const description =
+  'Capacitación en inteligencia artificial para personas, equipos y empresas: sesiones prácticas, programas por área y acompañamiento para convertir una idea en un proyecto.';
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Inteligencia Artificial', path: '/inteligencia-artificial/' },
+  { name: 'Capacitación y acompañamiento', path },
+];
+---
+
+<BaseLayout
+  title="Capacitación en IA para equipos y empresas"
+  description={description}
+  crumbs={crumbs}
+  active="ia"
+  schema={[service(base, { name: 'Capacitación y acompañamiento en IA', description, path, serviceType: 'Capacitación' })]}
+>
+  <PageHero
+    title="Capacitación en IA"
+    statement="Aprende a usar IA con el trabajo que ya haces todos los días."
+    text="Capacitaciones y acompañamiento para personas y equipos que quieren pasar de preguntas sueltas a una forma de trabajo más clara, repetible y útil."
+    cta={{ label: 'Diseñar una capacitación', href: '/contacto/?tema=capacitacion' }}
+    crumbs={crumbs}
+    family="ia"
+  />
+
+  <TwoPaths title="Dos caminos" />
+
+  <ListBlock
+    id="para-quien"
+    title="Para quién"
+    columns={3}
+    items={[
+      { title: 'Personas', text: 'Profesionales que quieren usar IA con método en su trabajo diario.' },
+      { title: 'Equipos', text: 'Áreas que necesitan flujos compartidos y criterios comunes de calidad.' },
+      { title: 'Empresas', text: 'Organizaciones que quieren adoptar IA con reglas claras de uso y confidencialidad.' },
+    ]}
+  />
+
+  <ListBlock
+    id="que-cambia"
+    title="Lo que cambia en el equipo"
+    variant="large"
+    theme="surface"
+    items={[
+      'El equipo sabe cuándo vale la pena usar IA y cuándo no.',
+      'Aprende a dar contexto, instrucciones y criterios de calidad.',
+      'Deja de copiar respuestas sin revisarlas.',
+      'Construye flujos reutilizables para tareas frecuentes.',
+      'Encuentra nuevos usos dentro de su propia función.',
+    ]}
+  />
+
+  <FormatRows
+    id="formatos"
+    title="Formatos"
+    rows={[
+      {
+        title: 'Sesión práctica',
+        text: 'Para un tema o un equipo concreto. Se trabaja directamente con tareas y ejemplos del negocio.',
+        list: ['Preparación previa', 'Ejercicios en vivo', 'Guía de uso posterior'],
+      },
+      {
+        title: 'Programa por áreas',
+        text: 'Marketing, ventas, administración, servicio u operaciones. Cada módulo aterriza la IA a su función.',
+        list: ['Casos por rol', 'Flujos reutilizables', 'Materiales y criterios de evaluación'],
+      },
+      {
+        title: 'Acompañamiento de proyecto',
+        text: 'Para equipos que ya tienen una idea y necesitan ayuda para convertirla en un proyecto funcional.',
+        list: ['Definición', 'Prototipo', 'Prueba', 'Iteración', 'Adopción'],
+      },
+    ]}
+  />
+
+  <SplitText
+    id="sin-prompts-magicos"
+    title="Sin “prompts mágicos”"
+    theme="inverse"
+    emphasis
+    paragraphs={[
+      'Trabajamos con lo que tu equipo hace todos los días.',
+      'Investigación y análisis, creación y revisión de contenidos, organización de proyectos, uso responsable y validación de resultados, y flujos que cada área pueda reutilizar.',
+    ]}
+  />
+
+  <RelatedServices slugs={['ia-para-tu-negocio', 'whatsapp-con-ia', 'desarrollos-a-medida']} />
+  <ClosingCta
+    title="Una capacitación con tus tareas"
+    text="Nos cuentas qué hace tu equipo y qué quiere mejorar; armamos la sesión o el programa alrededor de eso."
+    cta={{ label: 'Diseñar una capacitación', href: '/contacto/?tema=capacitacion' }}
+  />
+</BaseLayout>

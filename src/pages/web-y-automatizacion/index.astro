@@ -1,0 +1,176 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import FlowDiagram from '@/components/web/FlowDiagram.astro';
+import PairsTable from '@/components/blocks/PairsTable.astro';
+import Note from '@/components/blocks/Note.astro';
+import ClosingCta from '@/components/blocks/ClosingCta.astro';
+import Arrow from '@/components/ui/Arrow.astro';
+import { servicesByFamily } from '@/content/services';
+import { service } from '@/lib/schema';
+
+const base = Astro.site ?? new URL(Astro.url.origin);
+const path = '/web-y-automatizacion/';
+const description =
+  'Sitios web, landing pages, e-commerce, email y seguimiento de prospectos, automatización, CRM, desarrollos a medida, SEO y analítica: lo que convierte y mide después del clic.';
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Web y Automatización', path },
+];
+
+const items = servicesByFamily('web');
+const groups = [...new Set(items.map((s) => s.group!))].map((g) => ({
+  name: g,
+  items: items.filter((s) => s.group === g),
+}));
+---
+
+<BaseLayout
+  title="Sitios web, automatización, CRM y seguimiento"
+  description={description}
+  crumbs={crumbs}
+  active="web"
+  schema={[service(base, { name: 'Desarrollo web y automatización de marketing', description, path })]}
+>
+  <PageHero
+    title="Web y automatización"
+    statement="Que el interés no se pierda después del clic."
+    text="Sitios, landing pages, tiendas en línea, correos, CRM y herramientas a la medida para que cada contacto llegue, se registre y reciba seguimiento."
+    cta={{ label: 'Cuéntanos qué quieres resolver', href: '/contacto/?tema=automatizar' }}
+    crumbs={crumbs}
+    family="web"
+  />
+
+  <FlowDiagram />
+
+  <section class="groups section" data-theme="surface" aria-labelledby="servicios-web">
+    <div class="wrap">
+      <h2 id="servicios-web" class="t-head groups__title" data-split>Todo lo que vive aquí</h2>
+      <div class="groups__grid" data-reveal>
+        {
+          groups.map((g) => (
+            <div class="groups__col">
+              <h3 class="groups__name">{g.name}</h3>
+              <ul>
+                {g.items.map((s) => (
+                  <li>
+                    <a class="groups__link" href={s.path}>
+                      <span class="groups__link-name">
+                        {s.name} <Arrow class="groups__arrow" />
+                      </span>
+                      <span class="groups__link-summary">{s.summary}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <PairsTable
+    id="ejemplos"
+    title="Ejemplos de automatización"
+    head={['Cuando pasa esto…', 'Podemos hacer que…']}
+    rows={[
+      ['Alguien llena un formulario.', 'Reciba confirmación, se registre en el CRM y se avise al responsable.'],
+      ['Se agenda una cita.', 'Salgan recordatorios y se actualice el estado del contacto.'],
+      ['Hay prospectos sin actividad.', 'Se active una secuencia de reactivación.'],
+    ]}
+  />
+
+  <Note
+    id="criterio"
+    title="Criterio"
+    text="Preferimos una solución simple que funcione a una arquitectura complicada que nadie use."
+    detail="Podemos trabajar con lo que ya tienes. Si algo no vale la pena automatizar, te lo diremos."
+    tone="accent"
+  />
+
+  <ClosingCta
+    title="Encontremos las fugas"
+    text="Revisamos tu página, tu formulario, tu WhatsApp y tu seguimiento, y te decimos qué conviene arreglar primero."
+    cta={{ label: 'Cuéntanos qué quieres resolver', href: '/contacto/?tema=automatizar' }}
+  />
+</BaseLayout>
+
+<style>
+  .groups__title {
+    max-width: 16ch;
+    margin-bottom: var(--s-7);
+  }
+
+  .groups__grid {
+    display: grid;
+    gap: var(--s-6) var(--gap);
+  }
+
+  @media (min-width: 900px) {
+    .groups__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .groups__col ul {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .groups__name {
+    margin-bottom: var(--s-4);
+    font-size: var(--fs-label);
+    font-weight: 700;
+    letter-spacing: var(--tr-label);
+    text-transform: uppercase;
+    color: var(--violet);
+  }
+
+  .groups__link {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1.2rem 1.3rem;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid var(--c-line);
+    text-decoration: none;
+    transition:
+      transform var(--t-mid) var(--ease-out),
+      border-color var(--t-mid) ease;
+  }
+
+  .groups__link:hover {
+    transform: translateY(-4px);
+    border-color: var(--violet-300);
+  }
+
+  .groups__link-name {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  .groups__link-name :global(.groups__arrow) {
+    flex: none;
+    width: 0.9em;
+    height: 0.9em;
+    color: var(--violet);
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .groups__link:hover :global(.groups__arrow) {
+    transform: translateX(4px);
+  }
+
+  .groups__link-summary {
+    color: var(--c-ink-soft);
+    line-height: 1.45;
+    font-size: 0.95rem;
+  }
+</style>

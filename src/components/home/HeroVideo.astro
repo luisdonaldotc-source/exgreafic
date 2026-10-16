@@ -1,0 +1,490 @@
+---
+/**
+ * Hero del Home: video aéreo de una ciudad de noche (miles de luces = miles de
+ * personas buscando), tinte violeta, luz que sigue al cursor y una palabra que rota.
+ * Video: Mixkit (licencia libre para uso comercial). Póster inmediato, video en cuanto carga.
+ */
+import Arrow from '@/components/ui/Arrow.astro';
+
+const words = ['oportunidades.', 'conversaciones.', 'clientes.'];
+---
+
+<section class="hv" data-theme="dark" aria-labelledby="hero-titulo" data-hero>
+  <div class="hv__media" aria-hidden="true">
+    <div class="hv__media-inner" data-hero-media>
+      <video class="hv__video" autoplay muted loop playsinline preload="auto" poster="/video/ciudad-poster.jpg" data-autoplay>
+        <source src="/video/ciudad-960.mp4" type="video/mp4" media="(max-width: 767px)" />
+        <source src="/video/ciudad-1600.mp4" type="video/mp4" />
+      </video>
+    </div>
+    <div class="hv__tint"></div>
+    <div class="hv__glow" data-hero-glow></div>
+  </div>
+
+  <div class="wrap hv__content">
+    <p class="eyebrow hv__eyebrow">Marketing · Publicidad · Inteligencia artificial</p>
+
+    <h1 id="hero-titulo" class="hv__title">
+      <span class="visually-hidden">IA que trabaja. Marketing que genera oportunidades.</span>
+      <span class="hv__line" aria-hidden="true" style="--n: 0"><span>IA que trabaja.</span></span>
+      <span class="hv__line" aria-hidden="true" style="--n: 1"><span>Marketing que genera</span></span>
+      <span class="hv__line" aria-hidden="true" style="--n: 2">
+        <span class="hv__rotator" data-rotator>
+          {
+            words.map((w, i) => (
+              <span class:list={['hv__word', i === 0 && 'is-active']} data-word>
+                {w}
+              </span>
+            ))
+          }
+        </span>
+      </span>
+    </h1>
+
+    <div class="hv__bottom">
+      <p class="hv__lead">
+        Ayudamos a empresas a conseguir clientes, automatizar tareas y usar mejor la inteligencia artificial: anuncios
+        en ChatGPT, Google y redes, WhatsApp con IA, contenido, sitios web y automatizaciones.
+      </p>
+      <div class="hv__actions">
+        <a class="btn btn--gold" href="/contacto/" data-magnetic="0.2">
+          <span>Cuéntanos qué quieres mejorar</span>
+          <span class="btn__arrow"><Arrow /></span>
+        </a>
+        <a class="btn btn--ghost btn--plain" href="#por-donde-empezar">Ver por dónde empezar</a>
+      </div>
+    </div>
+  </div>
+
+  <a class="hv__news" href="/publicidad/chatgpt-ads/">
+    <span class="hv__news-thumb" aria-hidden="true">
+      <span class="hv__pulse"></span>
+    </span>
+    <span class="hv__news-body">
+      <span class="hv__news-kicker">Novedad</span>
+      <span class="hv__news-title">ChatGPT Ads ya está disponible en México</span>
+    </span>
+    <span class="hv__news-arrow"><Arrow dir="up-right" /></span>
+  </a>
+
+  <div class="hv__scroll" aria-hidden="true"><span></span></div>
+</section>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Palabra que rota.
+  const words = [...document.querySelectorAll<HTMLElement>('[data-word]')];
+  if (words.length > 1 && !reduce) {
+    let i = 0;
+    setInterval(() => {
+      const current = words[i];
+      i = (i + 1) % words.length;
+      current.classList.remove('is-active');
+      current.classList.add('is-out');
+      words[i].classList.remove('is-out');
+      words[i].classList.add('is-active');
+      setTimeout(() => current.classList.remove('is-out'), 700);
+    }, 2600);
+  }
+
+  // Luz y paralaje que siguen al cursor.
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const media = document.querySelector<HTMLElement>('[data-hero-media]');
+  const glow = document.querySelector<HTMLElement>('[data-hero-glow]');
+  if (hero && media && glow && fine && !reduce) {
+    let tx = 0;
+    let ty = 0;
+    let cx = 0;
+    let cy = 0;
+    let raf = 0;
+    const tick = () => {
+      cx += (tx - cx) * 0.06;
+      cy += (ty - cy) * 0.06;
+      media.style.transform = `translate3d(${cx * -18}px, ${cy * -12}px, 0) scale(1.08)`;
+      raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.001 ? requestAnimationFrame(tick) : 0;
+    };
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      tx = (e.clientX - r.left) / r.width - 0.5;
+      ty = (e.clientY - r.top) / r.height - 0.5;
+      glow.style.setProperty('--gx', `${e.clientX - r.left}px`);
+      glow.style.setProperty('--gy', `${e.clientY - r.top}px`);
+      glow.style.opacity = '1';
+      if (!raf) raf = requestAnimationFrame(tick);
+    });
+    hero.addEventListener('pointerleave', () => {
+      tx = 0;
+      ty = 0;
+      glow.style.opacity = '0';
+      if (!raf) raf = requestAnimationFrame(tick);
+    });
+  }
+</script>
+
+<style>
+  .hv {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: max(100svh, 640px);
+    padding: calc(var(--header-h) + var(--s-7)) 0 clamp(2rem, 6vh, 4.5rem);
+    overflow: hidden;
+    isolation: isolate;
+    color: #fff;
+  }
+
+  /* ---------- Medios ---------- */
+  .hv__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: var(--night);
+  }
+
+  .hv__media-inner {
+    position: absolute;
+    inset: -3%;
+    transform: scale(1.08);
+    will-change: transform;
+  }
+
+  .hv__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hv__video {
+      animation: hv-zoom 1.8s var(--ease-out) both;
+    }
+  }
+
+  @keyframes hv-zoom {
+    from {
+      opacity: 0;
+      transform: scale(1.12);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .hv__tint {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgb(11 9 18 / 0.7) 0%, rgb(11 9 18 / 0.15) 30%, rgb(11 9 18 / 0.35) 60%, rgb(11 9 18 / 0.92) 100%),
+      linear-gradient(100deg, rgb(91 33 182 / 0.55) 0%, rgb(124 58 237 / 0.12) 55%, transparent 80%);
+  }
+
+  .hv__glow {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background: radial-gradient(420px circle at var(--gx, 50%) var(--gy, 50%), rgb(245 196 81 / 0.16), transparent 65%);
+    transition: opacity 600ms ease;
+    mix-blend-mode: screen;
+  }
+
+  /* ---------- Texto ---------- */
+  .hv__content {
+    display: grid;
+    gap: var(--s-6);
+  }
+
+  .hv__eyebrow {
+    color: rgb(255 255 255 / 0.78);
+  }
+
+  .hv__eyebrow::before {
+    background: var(--gold);
+    box-shadow: 0 0 0 4px rgb(245 196 81 / 0.22);
+  }
+
+  .hv__title {
+    font-size: clamp(2.7rem, 1.3rem + 5.4vw, 6.9rem);
+    font-weight: 700;
+    line-height: 0.96;
+    letter-spacing: -0.05em;
+  }
+
+  .hv__line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+  }
+
+  .hv__line > span:not(.hv__rotator) {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .hv__line > span,
+    :global(html.js) .hv__line > .hv__rotator {
+      animation: hv-rise 1.1s var(--ease-out) both;
+      animation-delay: calc(250ms + var(--n) * 110ms);
+    }
+
+    :global(html.js) .hv__eyebrow,
+    :global(html.js) .hv__bottom,
+    :global(html.js) .hv__news {
+      animation: hv-fade 1s var(--ease-out) both;
+      animation-delay: 700ms;
+    }
+  }
+
+  @keyframes hv-rise {
+    from {
+      transform: translateY(110%) rotate(3deg);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  @keyframes hv-fade {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Palabra que rota: todas ocupan la misma celda; manda la más larga. */
+  .hv__rotator {
+    display: inline-grid;
+    overflow: hidden;
+    clip-path: inset(0 -0.3em 0 0);
+    vertical-align: bottom;
+    padding-bottom: 0.08em;
+  }
+
+  .hv__word {
+    grid-area: 1 / 1;
+    color: var(--gold);
+    transform: translateY(105%);
+    opacity: 0;
+    transition:
+      transform 700ms var(--ease-out),
+      opacity 500ms ease;
+  }
+
+  .hv__word.is-active {
+    transform: none;
+    opacity: 1;
+  }
+
+  .hv__word.is-out {
+    transform: translateY(-105%);
+    opacity: 0;
+  }
+
+  .hv__bottom {
+    display: grid;
+    gap: var(--s-5);
+    justify-items: start;
+  }
+
+  .hv__lead {
+    max-width: 52ch;
+    font-size: var(--fs-lead);
+    line-height: 1.45;
+    color: rgb(255 255 255 / 0.82);
+  }
+
+  .hv__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3);
+  }
+
+  .hv__actions .btn--ghost {
+    --btn-fg: #fff;
+    border-color: rgb(255 255 255 / 0.28);
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  @media (min-width: 1024px) {
+    .hv__bottom {
+      max-width: calc(100% - 25rem);
+    }
+  }
+
+  /* ---------- Tarjeta de novedad ---------- */
+  .hv__news {
+    display: none;
+    position: absolute;
+    right: var(--margin);
+    bottom: clamp(2rem, 6vh, 4.5rem);
+    width: 22rem;
+    align-items: center;
+    gap: var(--s-4);
+    padding: 0.8rem 0.9rem 0.8rem 0.8rem;
+    border-radius: 22px;
+    color: #fff;
+    text-decoration: none;
+    background: rgb(20 16 31 / 0.5);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid rgb(255 255 255 / 0.14);
+    transition:
+      transform var(--t-mid) var(--ease-out),
+      background-color var(--t-mid) ease;
+  }
+
+  .hv__news:hover {
+    transform: translateY(-4px);
+    background: rgb(20 16 31 / 0.7);
+  }
+
+  @media (min-width: 1024px) {
+    .hv__news {
+      display: flex;
+    }
+  }
+
+  .hv__news-thumb {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--violet) 0%, var(--violet-700) 100%);
+  }
+
+  .hv__news-thumb::after {
+    content: '+';
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .hv__pulse {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hv__pulse::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: hv-pulse 1.8s ease-out infinite;
+    }
+  }
+
+  @keyframes hv-pulse {
+    from {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    to {
+      transform: scale(3);
+      opacity: 0;
+    }
+  }
+
+  .hv__news-body {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .hv__news-kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .hv__news-title {
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .hv__news-arrow {
+    margin-left: auto;
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    flex: none;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.1);
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .hv__news:hover .hv__news-arrow {
+    transform: rotate(45deg);
+  }
+
+  /* ---------- Indicador de scroll ---------- */
+  .hv__scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 1.1rem;
+    width: 22px;
+    height: 36px;
+    border-radius: 12px;
+    border: 1.5px solid rgb(255 255 255 / 0.4);
+    transform: translateX(-50%);
+  }
+
+  .hv__scroll span {
+    position: absolute;
+    left: 50%;
+    top: 7px;
+    width: 3px;
+    height: 7px;
+    border-radius: 2px;
+    background: #fff;
+    transform: translateX(-50%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hv__scroll span {
+      animation: hv-scroll 1.8s var(--ease-in-out) infinite;
+    }
+  }
+
+  @keyframes hv-scroll {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, 0);
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, 12px);
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .hv__scroll {
+      display: none;
+    }
+  }
+</style>

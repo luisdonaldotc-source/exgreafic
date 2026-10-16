@@ -1,0 +1,137 @@
+---
+/** Servicios relacionados: tarjetas con lo que resuelve cada uno. */
+import Arrow from '@/components/ui/Arrow.astro';
+import { getService } from '@/content/services';
+
+interface Props {
+  slugs: string[];
+  title?: string;
+  id?: string;
+}
+const { slugs, title = 'Se conecta con', id = 'relacionados' } = Astro.props;
+const items = slugs.map(getService);
+---
+
+<section class="related section" aria-labelledby={id}>
+  <div class="wrap">
+    <div class="related__head">
+      <p class="eyebrow">Siguiente paso</p>
+      <h2 id={id} class="t-head related__title" data-split>{title}</h2>
+    </div>
+    <ul class="related__list" data-reveal>
+      {
+        items.map((s) => (
+          <li>
+            <a class="related__card" href={s.path} data-spotlight>
+              <span class="related__name">{s.name}</span>
+              <span class="related__summary">{s.summary}</span>
+              <span class="related__go" aria-hidden="true">
+                <Arrow dir="up-right" />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .related__head {
+    display: grid;
+    gap: var(--s-4);
+    margin-bottom: var(--s-6);
+  }
+
+  .related__list {
+    display: grid;
+    gap: var(--s-4);
+  }
+
+  @media (min-width: 768px) {
+    .related__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .related__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .related__list:has(> li:nth-child(3):last-child) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .related__card {
+    position: relative;
+    display: grid;
+    gap: var(--s-3);
+    align-content: end;
+    height: 100%;
+    min-height: 12rem;
+    padding: 1.5rem;
+    border-radius: 24px;
+    background: var(--night);
+    color: #f4f1fb;
+    text-decoration: none;
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform var(--t-mid) var(--ease-out);
+  }
+
+  .related__card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(300px circle at var(--mx, 100%) var(--my, 0%), rgb(124 58 237 / 0.5), transparent 70%);
+    opacity: 0.6;
+    transition: opacity 400ms ease;
+  }
+
+  .related__card:hover {
+    transform: translateY(-6px);
+  }
+
+  .related__card:hover::before {
+    opacity: 1;
+  }
+
+  .related__name {
+    font-size: var(--fs-lead);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    max-width: 18ch;
+  }
+
+  .related__summary {
+    color: #b9b2cf;
+    line-height: 1.45;
+  }
+
+  .related__go {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.1);
+    color: var(--gold);
+    transition:
+      transform var(--t-mid) var(--ease-out),
+      background-color var(--t-mid) ease;
+  }
+
+  .related__card:hover .related__go {
+    transform: rotate(45deg);
+    background: var(--gold);
+    color: #16111f;
+  }
+</style>

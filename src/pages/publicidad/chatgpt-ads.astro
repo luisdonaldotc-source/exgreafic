@@ -1,0 +1,198 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHero from '@/components/blocks/PageHero.astro';
+import StatBlock from '@/components/blocks/StatBlock.astro';
+import QueryVsConversation from '@/components/ads/QueryVsConversation.astro';
+import CompareTable from '@/components/blocks/CompareTable.astro';
+import ListBlock from '@/components/blocks/ListBlock.astro';
+import Note from '@/components/blocks/Note.astro';
+import FaqBlock from '@/components/blocks/FaqBlock.astro';
+import RelatedServices from '@/components/blocks/RelatedServices.astro';
+import ClosingCta from '@/components/blocks/ClosingCta.astro';
+import SourceList from '@/components/ui/SourceList.astro';
+import Cite from '@/components/ui/Cite.astro';
+import AdsDemo from '@/components/demos/AdsDemo.astro';
+import { chatgptAdsFaqs } from '@/content/faqs';
+import { service, faqPage } from '@/lib/schema';
+
+const base = Astro.site ?? new URL(Astro.url.origin);
+const path = '/publicidad/chatgpt-ads/';
+const description =
+  'ChatGPT Ads en México: evaluamos si el canal tiene sentido para tu negocio, creamos la campaña y la conectamos con una landing y medición. Anuncios separados de las respuestas.';
+const crumbs = [
+  { name: 'Inicio', path: '/' },
+  { name: 'Publicidad', path: '/publicidad/' },
+  { name: 'ChatGPT Ads', path },
+];
+---
+
+<BaseLayout
+  title="ChatGPT Ads para empresas en México"
+  description={description}
+  crumbs={crumbs}
+  active="publicidad"
+  schema={[
+    service(base, { name: 'Gestión de campañas en ChatGPT Ads', description, path, serviceType: 'Publicidad en ChatGPT' }),
+    faqPage(chatgptAdsFaqs),
+  ]}
+>
+  <PageHero
+    title="ChatGPT Ads"
+    statement="Llega a personas mientras exploran, comparan y deciden dentro de ChatGPT."
+    text="ChatGPT Ads abre un espacio publicitario basado en conversación y contexto. Te ayudamos a evaluar si tiene sentido para tu negocio, crear la campaña y conectarla con una experiencia capaz de convertir."
+    cta={{ label: 'Revisar mi oportunidad en ChatGPT Ads', href: '/contacto/?tema=chatgpt' }}
+    crumbs={crumbs}
+    family="publicidad"
+  >
+    <AdsDemo slot="aside" />
+  </PageHero>
+
+  <section class="define section" aria-labelledby="que-es">
+    <div class="wrap grid define__grid" data-reveal>
+      <h2 id="que-es" class="t-head define__title">Qué es ChatGPT Ads</h2>
+      <div class="define__body">
+        <p class="define__lead">
+          Es el programa de OpenAI que permite a las empresas mostrar anuncios dentro de ChatGPT.
+        </p>
+        <p>
+          Los anuncios aparecen separados de las respuestas y no cambian lo que ChatGPT contesta.<Cite
+            n={5}
+            scope="chatgpt"
+          /> Las campañas se administran desde Ads Manager, la plataforma de anuncios de OpenAI, que en México ya ofrece
+          acceso de autoservicio.<Cite n={2} scope="chatgpt" /> El canal es nuevo y sigue evolucionando: formatos,
+          segmentación y medición pueden cambiar, así que trabajamos siempre con la información oficial vigente.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <StatBlock
+    id="por-que"
+    title="Por qué este canal merece atención"
+    theme="accent"
+    facts={[
+      {
+        figure: '1.2',
+        unit: 'mil millones de personas',
+        text: 'usan ChatGPT cada semana, de acuerdo con OpenAI.',
+        source: 'openaiAds',
+      },
+    ]}
+    conclusion="La propuesta publicitaria de OpenAI se centra en señales de contexto más ricas que una palabra clave aislada. Eso permite pensar en momentos donde una persona explica qué quiere lograr, qué está comparando o qué problema intenta resolver."
+  />
+
+  <QueryVsConversation />
+
+  <CompareTable
+    id="no-reemplaza"
+    title="No reemplaza a Google"
+    statement="La pregunta útil no es “¿Google o ChatGPT?”, sino en qué momentos de decisión necesitas estar presente."
+    head={['Aspecto', 'Google Search', 'ChatGPT Ads']}
+    rows={[
+      ['Momento', 'La persona ya sabe qué busca y lo escribe.', 'La persona está entendiendo opciones o comparando.'],
+      ['Señal principal', 'Palabras clave e intención de búsqueda.', 'El contexto de la conversación, según OpenAI.'],
+      ['Papel en la estrategia', 'Capturar la demanda que ya existe.', 'Participar antes o durante la decisión.'],
+      ['Qué medimos', 'Llamadas, formularios, compras y citas por búsqueda.', 'Visitas, acciones y su relación con los otros canales.'],
+    ]}
+  />
+
+  <ListBlock
+    id="cuando-tiene-sentido"
+    title="Cuándo tiene sentido"
+    intro="Nuestra lectura para decidir si probar el canal ahora o más adelante."
+    variant="large"
+    theme="surface"
+    items={[
+      'Tu oferta se investiga o se compara antes de comprarla.',
+      'Tu cliente necesita entender opciones, no solo encontrar un precio.',
+      'Tienes una página o destino preparado para convertir.',
+      'Puedes medir lo que pasa después del clic.',
+      'Lo básico (búsqueda, sitio y seguimiento) ya funciona o se construye en paralelo.',
+    ]}
+  />
+
+  <ListBlock
+    id="que-hacemos"
+    title="Qué hacemos"
+    columns={3}
+    items={[
+      { title: 'Evaluación del canal', text: 'Si tiene sentido para tu oferta y tu cliente, y cuándo.' },
+      { title: 'Estructura y objetivo', text: 'Qué campaña, para quién y qué acción buscamos.' },
+      { title: 'Mensaje y variantes', text: 'Textos de anuncio pensados para un momento de exploración.' },
+      { title: 'Creatividades', text: 'Cuando el formato las requiere.' },
+      { title: 'Landing o destino', text: 'Una página que continúa la conversación.' },
+      { title: 'Medición', text: 'Configurada antes de lanzar, no después.' },
+      { title: 'Optimización', text: 'Ajustes con lo que la campaña va enseñando.' },
+    ]}
+  />
+
+  <Note
+    id="transparencia"
+    title="Transparencia importante"
+    text="Los anuncios en ChatGPT están separados de las respuestas y no cambian lo que el asistente contesta."
+    detail="El canal sigue evolucionando y las capacidades disponibles pueden cambiar. Te lo decimos así para no prometer lo que la plataforma todavía no ofrece."
+  />
+
+  <FaqBlock faqs={chatgptAdsFaqs} theme="surface" />
+
+  <section class="all-sources" aria-label="Fuentes de esta página">
+    <div class="wrap">
+      <SourceList
+        label="Fuentes oficiales consultadas"
+        ids={['openaiAds', 'openaiAvailability', 'openaiAdsSite', 'openaiTesting', 'openaiHelpAds']}
+        scope="chatgpt"
+      />
+    </div>
+  </section>
+
+  <RelatedServices slugs={['google-ads', 'seo-y-visibilidad-en-ia', 'sitios-web-y-landing-pages', 'analitica-y-medicion']} />
+  <ClosingCta
+    title="Revisemos tu caso en ChatGPT Ads"
+    text="Si tiene sentido, armamos la campaña y el destino. Si todavía no, te decimos qué conviene hacer antes."
+    cta={{ label: 'Revisar mi oportunidad en ChatGPT Ads', href: '/contacto/?tema=chatgpt' }}
+  />
+</BaseLayout>
+
+<style>
+  .define__grid {
+    row-gap: var(--s-6);
+  }
+
+  .define__title {
+    grid-column: 1 / -1;
+    max-width: 12ch;
+  }
+
+  .define__body {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--s-5);
+    max-width: 62ch;
+  }
+
+  .define__lead {
+    font-family: var(--font-serif);
+    font-size: var(--fs-statement);
+    line-height: 1.22;
+  }
+
+  .define__body p:not(.define__lead) {
+    font-family: var(--font-serif);
+    font-size: var(--fs-lead);
+    line-height: var(--lh-lead);
+  }
+
+  @media (min-width: 1024px) {
+    .define__title {
+      grid-column: 1 / span 5;
+    }
+
+    .define__body {
+      grid-column: 7 / -1;
+    }
+  }
+
+  .all-sources {
+    padding-bottom: var(--s-8);
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+/**
+ * Logotipo tipográfico provisional. Toma el nombre de config/site.ts y
+ * pinta el signo "+" en el color de acción.
+ */
+import { site } from '@/config/site';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+const parts = site.name.split('+');
+---
+
+<span class:list={['wordmark', className]}>
+  {
+    parts.length === 2 ? (
+      <>
+        {parts[0].trim()}
+        <span class="wordmark__plus" aria-hidden="true">+</span>
+        <span class="visually-hidden">más</span>
+        {parts[1].trim()}
+      </>
+    ) : (
+      site.name
+    )
+  }
+</span>
+
+<style>
+  .wordmark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.08em;
+    font-family: var(--font-sans);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .wordmark__plus {
+    color: var(--gold);
+    font-weight: 900;
+    display: inline-block;
+    transition: transform 600ms var(--ease-spring);
+  }
+
+  :global(a:hover) > .wordmark .wordmark__plus {
+    transform: rotate(90deg);
+  }
+</style>

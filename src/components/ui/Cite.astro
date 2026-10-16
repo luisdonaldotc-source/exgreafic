@@ -1,0 +1,30 @@
+---
+/** Llamada a fuente: número volado que enlaza a la lista de fuentes de la sección. */
+interface Props {
+  n: number;
+  scope: string;
+}
+const { n, scope } = Astro.props;
+---
+
+<sup class="cite"><a href={`#${scope}-fuente-${n}`} aria-label={`Fuente ${n}`}>{n}</a></sup>
+
+<style>
+  .cite {
+    font-size: 0.62em;
+    line-height: 0;
+    vertical-align: super;
+    font-family: var(--font-sans);
+    font-weight: var(--fw-strong);
+  }
+
+  .cite a {
+    display: inline-block;
+    padding: 0.25em 0.2em;
+    text-decoration: none;
+  }
+
+  .cite a:hover {
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,70 @@
+---
+/** Lista de fuentes de una sección. Cada entrada sale de content/sources.ts. */
+import { sources, type SourceId } from '@/content/sources';
+
+interface Props {
+  ids: SourceId[];
+  scope: string;
+  label?: string;
+  class?: string;
+}
+const { ids, scope, label = 'Fuentes', class: className } = Astro.props;
+---
+
+<div class:list={['sources', className]}>
+  <p class="sources__label">{label}</p>
+  <ol class="sources__list">
+    {
+      ids.map((id, i) => {
+        const s = sources[id];
+        return (
+          <li id={`${scope}-fuente-${i + 1}`}>
+            <span class="sources__n tabular">{i + 1}</span>
+            <span>
+              {s.publisher}, <a href={s.url} rel="noopener" target="_blank">{s.title}</a>
+              {s.date && <>, {s.date}</>}.
+            </span>
+          </li>
+        );
+      })
+    }
+  </ol>
+</div>
+
+<style>
+  .sources {
+    font-size: var(--fs-small);
+    line-height: 1.45;
+  }
+
+  .sources__label {
+    font-weight: var(--fw-strong);
+    margin-bottom: var(--s-2);
+  }
+
+  .sources__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-2);
+  }
+
+  .sources__list li {
+    display: flex;
+    gap: 0.6em;
+    scroll-margin-top: calc(var(--header-h) + 2rem);
+  }
+
+  .sources__list li:target {
+    font-weight: var(--fw-strong);
+  }
+
+  .sources__n {
+    flex: none;
+    min-width: 1em;
+    font-weight: var(--fw-strong);
+  }
+
+  .sources a {
+    word-break: break-word;
+  }
+</style>

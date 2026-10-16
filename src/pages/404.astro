@@ -1,0 +1,88 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/ui/Button.astro';
+import { families } from '@/content/services';
+---
+
+<BaseLayout title="Página no encontrada" description="La página que buscas no existe o cambió de dirección." noindex>
+  <section class="nf" data-theme="dark">
+    <div class="wrap">
+      <h1 class="t-display nf__title">Esta página no existe.</h1>
+      <p class="nf__text">
+        Puede que el enlace haya cambiado. Estas son las áreas principales del sitio, o puedes contarnos directamente qué
+        estás buscando.
+      </p>
+      <ul class="nf__links">
+        {
+          families.map((f) => (
+            <li>
+              <a href={f.path}>{f.name}</a>
+            </li>
+          ))
+        }
+        <li><a href="/">Inicio</a></li>
+      </ul>
+      <Button href="/contacto/" variant="gold">Cuéntanos qué buscas</Button>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding-block: calc(var(--header-h) + var(--s-8)) var(--section);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .nf::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(45% 50% at 80% 20%, rgb(124 58 237 / 0.45), transparent 70%),
+      radial-gradient(35% 40% at 10% 90%, rgb(245 196 81 / 0.15), transparent 70%);
+  }
+
+  .nf__title {
+    max-width: 12ch;
+  }
+
+  .nf__text {
+    margin-top: var(--s-6);
+    max-width: 44ch;
+    font-size: var(--fs-lead);
+    line-height: 1.45;
+    color: #c9c2dc;
+  }
+
+  .nf__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin: var(--s-6) 0 var(--s-7);
+  }
+
+  .nf__links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0 1.1rem;
+    border-radius: var(--pill);
+    border: 1px solid rgb(255 255 255 / 0.16);
+    font-weight: 700;
+    text-decoration: none;
+    transition:
+      background-color var(--t-fast) ease,
+      border-color var(--t-fast) ease;
+  }
+
+  .nf__links a:hover {
+    background: rgb(255 255 255 / 0.08);
+    border-color: var(--gold);
+  }
+</style>
