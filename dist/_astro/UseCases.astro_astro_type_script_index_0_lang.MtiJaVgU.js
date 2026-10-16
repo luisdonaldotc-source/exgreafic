@@ -1,0 +1,1 @@
+import"./tabs.BcP6naGG.js";
